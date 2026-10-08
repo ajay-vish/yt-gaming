@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YouTube Studio Mobile Screen</title>
+  <meta name="viewport" content="width=1080, height=1920, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body {
+      width: 1080px;
+      height: 1920px;
+      background-color: #0f0f0f;
+      color: #f1f1f1;
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- STATUS BAR --- */
+    .status-bar {
+      height: 90px;
+      padding: 20px 48px 0 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 32px;
+      font-weight: 600;
+      color: #ffffff;
+      z-index: 10;
+    }
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .battery {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .battery-pill {
+      width: 48px;
+      height: 24px;
+      border: 3px solid #ffffff;
+      border-radius: 6px;
+      padding: 2px;
+      position: relative;
+    }
+    .battery-pill::after {
+      content: '';
+      position: absolute;
+      right: -7px;
+      top: 5px;
+      width: 4px;
+      height: 10px;
+      background: #ffffff;
+      border-radius: 0 2px 2px 0;
+    }
+    .battery-level {
+      width: 92%;
+      height: 100%;
+      background: #ffffff;
+      border-radius: 2px;
+    }
+
+    /* --- TOP STUDIO APP BAR --- */
+    .app-bar {
+      height: 110px;
+      padding: 0 44px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #212121;
+      z-index: 10;
+    }
+    .studio-brand {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .studio-logo-icon {
+      width: 46px;
+      height: 46px;
+    }
+    .studio-brand-title {
+      font-size: 42px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+    }
+    .app-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+    }
+    .bell-icon-wrapper {
+      position: relative;
+      cursor: pointer;
+    }
+    .bell-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      width: 14px;
+      height: 14px;
+      background-color: #ff0000;
+      border-radius: 50%;
+      border: 2px solid #0f0f0f;
+    }
+    .avatar-mini {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #333333;
+    }
+
+    /* --- MAIN SCROLL CONTENT --- */
+    .content {
+      flex: 1;
+      padding: 30px 44px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      overflow: hidden;
+      z-index: 5;
+    }
+
+    /* --- CHANNEL HEADER --- */
+    .channel-header {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      padding-top: 6px;
+    }
+    .channel-avatar-main {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #282828;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    }
+    .channel-text {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .channel-name {
+      font-size: 40px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+    .channel-handle {
+      font-size: 26px;
+      color: #aaaaaa;
+      font-weight: 400;
+    }
+
+    /* --- TOTAL SUBSCRIBERS HERO CARD --- */
+    .subscribers-card {
+      background: #1e1e1e;
+      border-radius: 24px;
+      padding: 34px 40px;
+      border: 1px solid #2a2a2a;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .card-label {
+      font-size: 28px;
+      color: #aaaaaa;
+      font-weight: 500;
+      margin-bottom: 12px;
+      letter-spacing: 0.2px;
+    }
+    .counter-container {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      margin: 10px 0;
+    }
+    .counter-value {
+      font-size: 88px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -2px;
+      line-height: 1;
+      font-feature-settings: "tnum";
+      font-variant-numeric: tabular-nums;
+      transition: color 0.4s ease, text-shadow 0.4s ease, transform 0.15s ease;
+    }
+    .counter-value.ticking {
+      transform: scale(1.02);
+    }
+    .counter-value.milestone {
+      color: #ffd700;
+      text-shadow: 0 0 40px rgba(255, 215, 0, 0.7), 0 0 80px rgba(255, 215, 0, 0.4);
+    }
+    .sub-change-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 26px;
+      color: #2ba640;
+      font-weight: 500;
+      margin-top: 6px;
+    }
+    .growth-arrow {
+      fill: #2ba640;
+      width: 20px;
+      height: 20px;
+    }
+
+    /* --- CHANNEL ANALYTICS SUMMARY CARD --- */
+    .analytics-card {
+      background: #1e1e1e;
+      border-radius: 24px;
+      padding: 32px 38px;
+      border: 1px solid #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .analytics-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .analytics-title {
+      font-size: 34px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .analytics-period {
+      font-size: 24px;
+      color: #aaaaaa;
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .metric-box {
+      background: #272727;
+      border-radius: 16px;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .metric-name {
+      font-size: 22px;
+      color: #aaaaaa;
+      white-space: nowrap;
+    }
+    .metric-val {
+      font-size: 36px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .metric-growth {
+      font-size: 20px;
+      color: #2ba640;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+    }
+
+    /* --- REALTIME LIVE CARD --- */
+    .realtime-card {
+      background: #1e1e1e;
+      border-radius: 24px;
+      padding: 30px 38px;
+      border: 1px solid #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .realtime-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .realtime-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .realtime-live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      color: #3ea6ff;
+      font-weight: 600;
+    }
+    .pulse-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #3ea6ff;
+      box-shadow: 0 0 12px #3ea6ff;
+      animation: pulse 1.6s infinite ease-in-out;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      50% { transform: scale(1.35); opacity: 1; box-shadow: 0 0 18px #3ea6ff; }
+      100% { transform: scale(0.9); opacity: 0.7; }
+    }
+    .live-chart {
+      height: 110px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding-top: 10px;
+    }
+    .bar {
+      flex: 1;
+      background: #3ea6ff;
+      border-radius: 4px 4px 0 0;
+      opacity: 0.85;
+      transition: height 0.6s ease;
+    }
+    .bar:nth-child(even) {
+      opacity: 0.65;
+    }
+
+    /* --- LATEST CONTENT CARD --- */
+    .content-card {
+      background: #1e1e1e;
+      border-radius: 24px;
+      padding: 28px 36px;
+      border: 1px solid #2a2a2a;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+    .thumb-box {
+      width: 190px;
+      height: 110px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #e50914, #ff6b6b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .thumb-play {
+      width: 36px;
+      height: 36px;
+      fill: #ffffff;
+    }
+    .thumb-time {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      background: rgba(0,0,0,0.8);
+      font-size: 16px;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .content-info {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow: hidden;
+    }
+    .content-title {
+      font-size: 26px;
+      font-weight: 600;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .content-stats {
+      font-size: 22px;
+      color: #aaaaaa;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .content-rank {
+      color: #2ba640;
+      font-weight: 500;
+    }
+
+    /* --- BOTTOM TAB BAR --- */
+    .bottom-bar {
+      height: 140px;
+      background: #0f0f0f;
+      border-top: 1px solid #212121;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 10px 20px 10px;
+      z-index: 10;
+    }
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: #aaaaaa;
+      font-size: 20px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .tab-item.active {
+      color: #ff0000;
+    }
+    .tab-item.active svg {
+      fill: #ff0000;
+    }
+    .home-indicator {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 280px;
+      height: 6px;
+      background: #ffffff;
+      border-radius: 4px;
+      opacity: 0.6;
+    }
+
+    /* --- MILESTONE OVERLAY & BANNER --- */
+    .milestone-banner {
+      position: absolute;
+      top: 240px;
+      left: 44px;
+      right: 44px;
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+      color: #000000;
+      padding: 24px;
+      border-radius: 22px;
+      box-shadow: 0 14px 40px rgba(255, 215, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      font-size: 32px;
+      font-weight: 900;
+      transform: translateY(-80px) scale(0.85);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 20;
+    }
+    .milestone-banner.show {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1080px;
+      height: 1920px;
+      pointer-events: none;
+      z-index: 30;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <div id="status-time">9:41</div>
+    <div class="status-icons">
+      <!-- 5G -->
+      <span style="font-size: 24px; font-weight: 700; margin-right: 4px;">5G</span>
+      <!-- Signal bars -->
+      <svg width="28" height="22" viewBox="0 0 24 20" fill="#ffffff">
+        <rect x="1" y="14" width="3" height="6" rx="1"/>
+        <rect x="7" y="10" width="3" height="10" rx="1"/>
+        <rect x="13" y="5" width="3" height="15" rx="1"/>
+        <rect x="19" y="0" width="3" height="20" rx="1"/>
+      </svg>
+      <!-- Battery -->
+      <div class="battery">
+        <div class="battery-pill">
+          <div class="battery-level"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Studio App Bar -->
+  <div class="app-bar">
+    <div class="studio-brand">
+      <!-- YouTube Studio official logo mark -->
+      <svg class="studio-logo-icon" viewBox="0 0 24 24">
+        <path fill="#FF0000" d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l7 4-7 4z"/>
+      </svg>
+      <span class="studio-brand-title">Studio</span>
+    </div>
+    <div class="app-bar-actions">
+      <!-- Notification bell -->
+      <div class="bell-icon-wrapper">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="#ffffff">
+          <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+        </svg>
+        <div class="bell-badge"></div>
+      </div>
+      <!-- Mini avatar -->
+      <img id="avatar-mini" class="avatar-mini" src="../assets/default_avatar.png" alt="Avatar">
+    </div>
+  </div>
+
+  <!-- Main Dashboard Content -->
+  <div class="content">
+
+    <!-- Channel Header -->
+    <div class="channel-header">
+      <img id="channel-avatar" class="channel-avatar-main" src="../assets/default_avatar.png" alt="Channel Avatar">
+      <div class="channel-text">
+        <div id="channel-name" class="channel-name">Awesome Channel</div>
+        <div id="channel-handle" class="channel-handle">@awesomechannel</div>
+      </div>
+    </div>
+
+    <!-- Hero Subscribers Card -->
+    <div class="subscribers-card" id="subscribers-card">
+      <div class="card-label">Total subscribers</div>
+      <div class="counter-container">
+        <div id="counter-val" class="counter-value">99,990</div>
+      </div>
+      <div class="sub-change-badge">
+        <svg class="growth-arrow" viewBox="0 0 24 24">
+          <path d="M12 4l-8 8h5v8h6v-8h5z"/>
+        </svg>
+        <span id="sub-change-text">+1,850 in last 28 days</span>
+      </div>
+    </div>
+
+    <!-- Channel Analytics Card -->
+    <div class="analytics-card">
+      <div class="analytics-header">
+        <div class="analytics-title">Channel analytics</div>
+        <div class="analytics-period">Last 28 days</div>
+      </div>
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <div class="metric-name">Views</div>
+          <div class="metric-val" id="metric-views">184.2K</div>
+          <div class="metric-growth">▲ 28%</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-name">Watch time</div>
+          <div class="metric-val" id="metric-watch">5.4K</div>
+          <div class="metric-growth">▲ 15%</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-name">Subscribers</div>
+          <div class="metric-val" id="metric-subs">+2.4K</div>
+          <div class="metric-growth">▲ 42%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Realtime Live Graph Card -->
+    <div class="realtime-card">
+      <div class="realtime-header">
+        <div class="realtime-title">Realtime</div>
+        <div class="realtime-live-indicator">
+          <div class="pulse-dot"></div>
+          <span>Updating live</span>
+        </div>
+      </div>
+      <div class="live-chart" id="live-chart">
+        <!-- Live histogram bars generated via JS -->
+      </div>
+    </div>
+
+    <!-- Latest Published Content Card -->
+    <div class="content-card">
+      <div class="thumb-box">
+        <svg class="thumb-play" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+        <span class="thumb-time">0:45</span>
+      </div>
+      <div class="content-info">
+        <div class="content-title" id="recent-video-title">The Secret Behind 100K Followers</div>
+        <div class="content-stats">
+          <span class="content-rank">Ranking 1 of 10</span>
+          <span>• 32.4K views</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Milestone Celebration Banner -->
+  <div class="milestone-banner" id="milestone-banner">
+    <span>🏆</span>
+    <span id="milestone-text">100,000 SUBSCRIBERS UNLOCKED!</span>
+    <span>🎉</span>
+  </div>
+
+  <!-- Bottom Navigation Tab Bar -->
+  <div class="bottom-bar">
+    <div class="tab-item active">
+      <svg width="32" height="32" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      <span>Dashboard</span>
+    </div>
+    <div class="tab-item">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="#aaaaaa"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>
+      <span>Content</span>
+    </div>
+    <div class="tab-item">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="#aaaaaa"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+      <span>Analytics</span>
+    </div>
+    <div class="tab-item">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="#aaaaaa"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+      <span>Comments</span>
+    </div>
+    <div class="tab-item">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="#aaaaaa"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+      <span>Earn</span>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <script>
+    // Configuration defaults (can be overridden via window.CONFIG or URL query parameters)
+    const urlParams = new URLSearchParams(window.location.search);
+    const config = Object.assign({
+      channelName: "Manju Vishwakarma",
+      channelHandle: "@manjuvishwakarma",
+      avatarUrl: "../assets/default_avatar.png",
+      startCount: 99980,
+      endCount: 100000,
+      durationSec: 15,
+      holdStartSec: 2.0,
+      holdEndSec: 3.0,
+      views: "184.2K",
+      watchTime: "5.4K",
+      subGrowth: "+2.4K",
+      recentVideoTitle: "Popular Song | Official Shorts",
+      milestoneMessage: "100,000 SUBSCRIBERS UNLOCKED!"
+    }, window.CONFIG || {});
+
+    // Read URL overrides if provided
+    if (urlParams.get("channelName")) config.channelName = urlParams.get("channelName");
+    if (urlParams.get("channelHandle")) config.channelHandle = urlParams.get("channelHandle");
+    if (urlParams.get("avatarUrl")) config.avatarUrl = urlParams.get("avatarUrl");
+    if (urlParams.get("startCount")) config.startCount = parseInt(urlParams.get("startCount"));
+    if (urlParams.get("endCount")) config.endCount = parseInt(urlParams.get("endCount"));
+    if (urlParams.get("durationSec")) config.durationSec = parseFloat(urlParams.get("durationSec"));
+
+    // Apply UI text
+    document.getElementById("channel-name").textContent = config.channelName;
+    document.getElementById("channel-handle").textContent = config.channelHandle;
+    document.getElementById("channel-avatar").src = config.avatarUrl;
+    document.getElementById("avatar-mini").src = config.avatarUrl;
+    document.getElementById("metric-views").textContent = config.views;
+    document.getElementById("metric-watch").textContent = config.watchTime;
+    document.getElementById("metric-subs").textContent = config.subGrowth;
+    document.getElementById("recent-video-title").textContent = config.recentVideoTitle;
+    document.getElementById("milestone-text").textContent = config.milestoneMessage;
+
+    // Realtime histogram generation
+    const liveChart = document.getElementById("live-chart");
+    const barHeights = [
+      35, 42, 48, 55, 62, 58, 68, 75, 72, 85, 90, 82, 88, 94, 98, 100,
+      92, 86, 90, 95, 98, 102, 106, 110, 105, 108, 110
+    ];
+    barHeights.forEach((h, idx) => {
+      const bar = document.createElement("div");
+      bar.className = "bar";
+      bar.style.height = `${Math.min(105, h * 0.95)}px`;
+      liveChart.appendChild(bar);
+    });
+
+    // Time ticker for status bar
+    const now = new Date();
+    const hours = now.getHours() % 12 || 12;
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    document.getElementById("status-time").textContent = `${hours}:${minutes}`;
+
+    // Confetti Engine
+    const canvas = document.getElementById("confetti-canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = 1080;
+    canvas.height = 1920;
+
+    let particles = [];
+    const colors = ["#FFD700", "#FF0000", "#FFFFFF", "#3EA6FF", "#2BA640", "#FF69B4", "#FFA500"];
+
+    function triggerConfetti() {
+      particles = [];
+      for (let i = 0; i < 220; i++) {
+        particles.push({
+          x: 540 + (Math.random() - 0.5) * 300,
+          y: 600,
+          vx: (Math.random() - 0.5) * 26,
+          vy: -Math.random() * 24 - 8,
+          size: Math.random() * 14 + 8,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 12,
+          gravity: 0.55,
+          opacity: 1
+        });
+      }
+    }
+
+    function renderConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.rotation += p.rotSpeed;
+        p.opacity -= 0.0035;
+
+        if (p.opacity > 0) {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = Math.max(0, p.opacity);
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.4);
+          ctx.restore();
+        }
+      }
+      requestAnimationFrame(renderConfetti);
+    }
+    renderConfetti();
+
+    // Subscriber Counter Animation with Real Ticker Dynamics
+    const counterEl = document.getElementById("counter-val");
+    let currentCount = config.startCount;
+    counterEl.textContent = Number(currentCount).toLocaleString();
+
+    // Timing calculations
+    const startTime = performance.now();
+    const totalDurationMs = config.durationSec * 1000;
+    const holdStartMs = config.holdStartSec * 1000;
+    const holdEndMs = config.holdEndSec * 1000;
+    const activeAnimationMs = totalDurationMs - holdStartMs - holdEndMs;
+
+    let milestoneTriggered = false;
+
+    // Window animation event dispatcher for audio sync
+    window.TICK_EVENTS = []; // Stores timestamp in ms when ticks occurred
+
+    function updateCounter(nowTimestamp) {
+      const elapsed = nowTimestamp - startTime;
+
+      if (elapsed < holdStartMs) {
+        // Hold on starting number
+        currentCount = config.startCount;
+      } else if (elapsed < holdStartMs + activeAnimationMs) {
+        // Active ticking up
+        const animProgress = (elapsed - holdStartMs) / activeAnimationMs;
+        // Ease-out progress so anticipation builds up near the milestone
+        // const eased = 1 - Math.pow(1 - animProgress, 1.4);
+        const eased = Math.min(1, animProgress * 1.05);
+        const targetNumber = Math.floor(config.startCount + (config.endCount - config.startCount) * eased);
+        
+        if (targetNumber > currentCount) {
+          currentCount = Math.min(config.endCount, targetNumber);
+          window.TICK_EVENTS.push({ timeMs: elapsed, count: currentCount });
+          counterEl.classList.add("ticking");
+          setTimeout(() => counterEl.classList.remove("ticking"), 80);
+        }
+      } else {
+        // Milestone reached!
+        currentCount = config.endCount;
+        if (!milestoneTriggered) {
+          milestoneTriggered = true;
+          window.MILESTONE_TIME_MS = elapsed;
+          counterEl.classList.add("milestone");
+          document.getElementById("milestone-banner").classList.add("show");
+          triggerConfetti();
+        }
+      }
+
+      counterEl.textContent = Number(currentCount).toLocaleString();
+
+      if (elapsed < totalDurationMs) {
+        requestAnimationFrame(updateCounter);
+      } else {
+        window.ANIMATION_COMPLETED = true;
+      }
+    }
+
+    requestAnimationFrame(updateCounter);
+  </script>
+</body>
+</html>

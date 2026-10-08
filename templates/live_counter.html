@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YouTube Studio Desktop Live Subscriber Count</title>
+  <meta name="viewport" content="width=1080, height=1920, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body {
+      width: 1080px;
+      height: 1920px;
+      background-color: #0f0f0f;
+      color: #f1f1f1;
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    /* Top Desktop Header */
+    .header {
+      height: 140px;
+      padding: 0 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #272727;
+      background: #0f0f0f;
+    }
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .yt-logo-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .yt-icon {
+      width: 52px;
+      height: 52px;
+    }
+    .yt-title {
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+    }
+    .studio-badge {
+      font-size: 20px;
+      color: #aaaaaa;
+      font-weight: 400;
+      margin-left: 6px;
+    }
+
+    /* Main Live Card */
+    .center-card {
+      margin: 40px auto;
+      width: 980px;
+      background: #1f1f1f;
+      border-radius: 28px;
+      border: 1px solid #2e2e2e;
+      padding: 60px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    /* Live status badge */
+    .realtime-pill {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 0, 0, 0.12);
+      border: 1px solid rgba(255, 0, 0, 0.3);
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-size: 24px;
+      font-weight: 600;
+      color: #ff4e45;
+      margin-bottom: 36px;
+    }
+    .live-dot {
+      width: 14px;
+      height: 14px;
+      background: #ff4e45;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #ff4e45;
+      animation: blink 1.4s infinite ease-in-out;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .channel-profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+    .avatar-large {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #333333;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    }
+    .channel-name {
+      font-size: 46px;
+      font-weight: 700;
+      color: #ffffff;
+      text-align: center;
+    }
+    .channel-subtext {
+      font-size: 26px;
+      color: #aaaaaa;
+    }
+
+    /* Giant Counter */
+    .counter-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0 40px 0;
+    }
+    .counter-number {
+      font-size: 112px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -2px;
+      font-feature-settings: "tnum";
+      font-variant-numeric: tabular-nums;
+      transition: color 0.4s ease, text-shadow 0.4s ease, transform 0.15s ease;
+    }
+    .counter-number.ticking {
+      transform: scale(1.03);
+    }
+    .counter-number.milestone {
+      color: #ffd700;
+      text-shadow: 0 0 45px rgba(255, 215, 0, 0.8), 0 0 90px rgba(255, 215, 0, 0.5);
+    }
+    .counter-label {
+      font-size: 32px;
+      color: #aaaaaa;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    /* Growth chart */
+    .chart-box {
+      width: 100%;
+      height: 220px;
+      background: #181818;
+      border-radius: 18px;
+      border: 1px solid #282828;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 22px;
+      color: #aaaaaa;
+    }
+    .chart-svg {
+      width: 100%;
+      height: 140px;
+    }
+
+    /* Bottom footer watermark */
+    .footer {
+      height: 120px;
+      padding: 0 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #272727;
+      color: #717171;
+      font-size: 24px;
+    }
+
+    /* Celebration Banner */
+    .celebrate-banner {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+      color: #000;
+      font-size: 32px;
+      font-weight: 900;
+      padding: 20px 48px;
+      border-radius: 30px;
+      box-shadow: 0 12px 40px rgba(255, 215, 0, 0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 20;
+    }
+    .celebrate-banner.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    #confetti-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1080px;
+      height: 1920px;
+      pointer-events: none;
+      z-index: 30;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Studio Header -->
+  <div class="header">
+    <div class="brand-left">
+      <div class="yt-logo-box">
+        <svg class="yt-icon" viewBox="0 0 24 24">
+          <path fill="#FF0000" d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l7 4-7 4z"/>
+        </svg>
+        <span class="yt-title">Studio</span>
+        <span class="studio-badge">| Channel Analytics</span>
+      </div>
+    </div>
+    <div>
+      <img id="avatar-header" src="../assets/default_avatar.png" style="width: 54px; height: 54px; border-radius: 50%; border: 2px solid #333;" alt="avatar">
+    </div>
+  </div>
+
+  <!-- Main Card -->
+  <div class="center-card">
+    <div class="realtime-pill">
+      <div class="live-dot"></div>
+      <span>UPDATING LIVE</span>
+    </div>
+
+    <div class="channel-profile">
+      <img id="channel-avatar" class="avatar-large" src="../assets/default_avatar.png" alt="Channel avatar">
+      <div id="channel-name" class="channel-name">Channel Name</div>
+      <div id="channel-handle" class="channel-subtext">@channelhandle</div>
+    </div>
+
+    <div class="counter-block">
+      <div id="counter-val" class="counter-number">99,990</div>
+      <div class="counter-label">Subscribers</div>
+    </div>
+
+    <div class="chart-box">
+      <div class="chart-header">
+        <span>Subscriber growth</span>
+        <span style="color: #2ba640; font-weight: 500;">▲ Realtime</span>
+      </div>
+      <svg class="chart-svg" viewBox="0 0 600 120">
+        <defs>
+          <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3ea6ff" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#3ea6ff" stop-opacity="0.0"/>
+          </linearGradient>
+        </defs>
+        <path d="M0,100 Q150,90 300,60 T600,15 L600,120 L0,120 Z" fill="url(#chartGrad)"/>
+        <path d="M0,100 Q150,90 300,60 T600,15" fill="none" stroke="#3ea6ff" stroke-width="4"/>
+        <circle cx="600" cy="15" r="6" fill="#3ea6ff"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Bottom Footer -->
+  <div class="footer">
+    <span>YouTube Studio Realtime Analytics</span>
+    <span>Live Count</span>
+  </div>
+
+  <!-- Celebration Banner -->
+  <div class="celebrate-banner" id="milestone-banner">
+    🎉 100,000 SUBSCRIBERS UNLOCKED! 🏆
+  </div>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const config = Object.assign({
+      channelName: "Awesome Channel",
+      channelHandle: "@awesomechannel",
+      avatarUrl: "../assets/default_avatar.png",
+      startCount: 99980,
+      endCount: 100000,
+      durationSec: 15,
+      holdStartSec: 2.0,
+      holdEndSec: 3.0,
+      milestoneMessage: "100,000 SUBSCRIBERS UNLOCKED!"
+    }, window.CONFIG || {});
+
+    if (urlParams.get("channelName")) config.channelName = urlParams.get("channelName");
+    if (urlParams.get("channelHandle")) config.channelHandle = urlParams.get("channelHandle");
+    if (urlParams.get("avatarUrl")) config.avatarUrl = urlParams.get("avatarUrl");
+    if (urlParams.get("startCount")) config.startCount = parseInt(urlParams.get("startCount"));
+    if (urlParams.get("endCount")) config.endCount = parseInt(urlParams.get("endCount"));
+    if (urlParams.get("durationSec")) config.durationSec = parseFloat(urlParams.get("durationSec"));
+
+    document.getElementById("channel-name").textContent = config.channelName;
+    document.getElementById("channel-handle").textContent = config.channelHandle;
+    document.getElementById("channel-avatar").src = config.avatarUrl;
+    document.getElementById("avatar-header").src = config.avatarUrl;
+    document.getElementById("milestone-banner").textContent = config.milestoneMessage;
+
+    // Confetti
+    const canvas = document.getElementById("confetti-canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = 1080;
+    canvas.height = 1920;
+    let particles = [];
+    const colors = ["#FFD700", "#FF0000", "#FFFFFF", "#3EA6FF", "#2BA640"];
+
+    function triggerConfetti() {
+      particles = [];
+      for (let i = 0; i < 220; i++) {
+        particles.push({
+          x: 540 + (Math.random() - 0.5) * 300,
+          y: 750,
+          vx: (Math.random() - 0.5) * 26,
+          vy: -Math.random() * 24 - 8,
+          size: Math.random() * 14 + 8,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 12,
+          gravity: 0.55,
+          opacity: 1
+        });
+      }
+    }
+
+    function renderConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.rotation += p.rotSpeed;
+        p.opacity -= 0.0035;
+
+        if (p.opacity > 0) {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = Math.max(0, p.opacity);
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.4);
+          ctx.restore();
+        }
+      }
+      requestAnimationFrame(renderConfetti);
+    }
+    renderConfetti();
+
+    // Counter
+    const counterEl = document.getElementById("counter-val");
+    let currentCount = config.startCount;
+    counterEl.textContent = Number(currentCount).toLocaleString();
+
+    const startTime = performance.now();
+    const totalDurationMs = config.durationSec * 1000;
+    const holdStartMs = config.holdStartSec * 1000;
+    const holdEndMs = config.holdEndSec * 1000;
+    const activeAnimationMs = totalDurationMs - holdStartMs - holdEndMs;
+    let milestoneTriggered = false;
+
+    window.TICK_EVENTS = [];
+
+    function updateCounter(nowTimestamp) {
+      const elapsed = nowTimestamp - startTime;
+
+      if (elapsed < holdStartMs) {
+        currentCount = config.startCount;
+      } else if (elapsed < holdStartMs + activeAnimationMs) {
+        const animProgress = (elapsed - holdStartMs) / activeAnimationMs;
+        const targetNumber = Math.floor(config.startCount + (config.endCount - config.startCount) * animProgress);
+        
+        if (targetNumber > currentCount) {
+          currentCount = Math.min(config.endCount, targetNumber);
+          window.TICK_EVENTS.push({ timeMs: elapsed, count: currentCount });
+          counterEl.classList.add("ticking");
+          setTimeout(() => counterEl.classList.remove("ticking"), 80);
+        }
+      } else {
+        currentCount = config.endCount;
+        if (!milestoneTriggered) {
+          milestoneTriggered = true;
+          window.MILESTONE_TIME_MS = elapsed;
+          counterEl.classList.add("milestone");
+          document.getElementById("milestone-banner").classList.add("show");
+          triggerConfetti();
+        }
+      }
+
+      counterEl.textContent = Number(currentCount).toLocaleString();
+
+      if (elapsed < totalDurationMs) {
+        requestAnimationFrame(updateCounter);
+      } else {
+        window.ANIMATION_COMPLETED = true;
+      }
+    }
+
+    requestAnimationFrame(updateCounter);
+  </script>
+</body>
+</html>
