@@ -5,17 +5,9 @@
   "last_increment": 146,
   "video_index": 2,
   "scheduled_slots": [
-    "2026-10-08T15:00:00Z",
-    "2026-10-09T15:00:00Z"
+    "2026-10-08T15:00:00Z"
   ],
   "uploaded_videos": [
-    {
-      "video_id": "IeYLwImIlzo",
-      "title": "FROM 5 TO 105 SUBSCRIBERS! 😱 We Did It! 🎉 Thank You! #Shorts #YouTubeStudio",
-      "milestone": 105,
-      "publish_at": "2026-10-08T15:00:00Z",
-      "uploaded_at": "2026-10-08T09:56:08.254082+00:00"
-    },
     {
       "video_id": "asgI6VTT5yM",
       "title": "OMG 251 SUBSCRIBERS! We Did It! 🥹🎉 Thank You! #Shorts #YouTubeStudio",
@@ -25,10 +17,6 @@
     }
   ],
   "pending_comments": {
-    "IeYLwImIlzo": {
-      "target_count": 105,
-      "publish_at": "2026-10-08T15:00:00Z"
-    },
     "asgI6VTT5yM": {
       "target_count": 251,
       "publish_at": "2026-10-09T15:00:00Z"
