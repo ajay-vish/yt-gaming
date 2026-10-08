@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=1080, height=1920, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/ask_studio.css">
 </head>
 <body>
@@ -14,75 +14,68 @@
   <!-- Flash Overlay for Camera Shutter Transitions -->
   <div id="flash-overlay"></div>
 
-  <!-- Status Bar & Dynamic Island -->
+  <!-- iOS Status Bar -->
   <div class="status-bar">
-    <div class="status-time" id="status-time">2:13</div>
+    <div class="status-time" id="status-time">4:01</div>
     
-    <div class="dynamic-island" id="dynamic-island">
-      <div class="island-left">
-        <img class="island-art" id="island-art" src="../assets/channel_avatar.png" alt="art">
-        <span class="island-milestone-msg" id="island-milestone-msg">2,200 Subs Reached!</span>
-      </div>
-      <div class="island-wave">
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-      </div>
-      <span class="island-right-badge">🎉</span>
-    </div>
-
     <div class="status-icons">
-      <!-- 4 Signal Bars -->
-      <svg width="28" height="22" viewBox="0 0 24 20" fill="#000000">
-        <rect x="1" y="14" width="3" height="6" rx="1"/>
-        <rect x="7" y="10" width="3" height="10" rx="1"/>
-        <rect x="13" y="5" width="3" height="15" rx="1"/>
-        <rect x="19" y="0" width="3" height="20" rx="1"/>
+      <!-- 4 Cellular Signal Bars -->
+      <svg class="signal-bars" width="26" height="22" viewBox="0 0 24 20" fill="currentColor">
+        <rect x="1" y="14" width="3.5" height="6" rx="1"/>
+        <rect x="7" y="10" width="3.5" height="10" rx="1"/>
+        <rect x="13" y="5" width="3.5" height="15" rx="1"/>
+        <rect x="19" y="0" width="3.5" height="20" rx="1"/>
       </svg>
       <!-- WiFi -->
-      <svg width="28" height="22" viewBox="0 0 24 24" fill="#000000">
+      <svg class="wifi-icon" width="28" height="22" viewBox="0 0 24 24" fill="currentColor">
         <path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4zm0 3.3c3.78 0 7.21 1.48 9.77 3.93L12 19.01 2.23 11.23C4.79 8.78 8.22 7.3 12 7.3z"/>
       </svg>
-      <!-- Battery with percentage -->
-      <div class="battery-icon-box">
-        <span id="battery-percent">44</span>
+      <!-- Battery with Percentage Inside -->
+      <div class="battery-capsule">
+        <span id="battery-percent">30</span>
       </div>
     </div>
   </div>
 
-  <!-- Studio App Bar -->
+  <!-- YouTube Studio Top App Bar -->
   <div class="app-bar">
     <div class="studio-brand">
-      <svg class="studio-logo-icon" viewBox="0 0 24 24">
-        <path fill="#FF0000" d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l7 4-7 4z"/>
+      <svg class="studio-logo-icon" viewBox="0 0 28 20" width="42" height="30">
+        <path fill="#FF0000" d="M27.4 3.1c-.3-1.2-1.3-2.1-2.5-2.4C22.7 0 14 0 14 0S5.3 0 3.1.7C1.9 1 1 1.9.6 3.1 0 5.3 0 10 0 10s0 4.7.6 6.9c.3 1.2 1.3 2.1 2.5 2.4 2.2.7 10.9.7 10.9.7s8.7 0 10.9-.7c1.2-.3 2.1-1.2 2.5-2.4.6-2.2.6-6.9.6-6.9s0-4.7-.6-6.9z"/>
+        <polygon fill="#FFFFFF" points="11.2,14.3 18.5,10 11.2,5.7"/>
       </svg>
       <span class="studio-brand-title">Studio</span>
     </div>
     <div class="app-bar-actions">
-      <!-- Create plus in circle -->
-      <svg class="action-icon" viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+      <!-- Create plus in thin circle -->
+      <svg class="action-icon" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="7.5" x2="12" y2="16.5"/>
+        <line x1="7.5" y1="12" x2="16.5" y2="12"/>
       </svg>
       <!-- Notification bell -->
-      <svg class="action-icon" viewBox="0 0 24 24">
-        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+      <svg class="action-icon" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
       </svg>
       <!-- Mini avatar -->
       <img id="avatar-mini" class="avatar-mini" src="../assets/channel_avatar.png" alt="Avatar">
     </div>
   </div>
 
+  <!-- iOS Scrollbar Indicator on Right -->
+  <div class="ios-scrollbar"></div>
+
   <!-- Main Scrollable Content Viewport -->
   <div class="content-viewport">
+
 
     <!-- Channel Header -->
     <div class="channel-header">
       <img id="channel-avatar" class="channel-avatar-main" src="../assets/channel_avatar.png" alt="Channel Avatar">
       <div class="channel-text">
         <div id="channel-name" class="channel-name">ASK Gaming</div>
-        <div id="counter-val" class="counter-value">2,151</div>
+        <div id="counter-val" class="counter-value">2,157</div>
         <div class="subscribers-label">Total subscribers</div>
       </div>
     </div>
@@ -98,9 +91,11 @@
         <div class="metric-card">
           <div class="metric-label">Views</div>
           <div class="metric-value-row">
-            <span class="metric-num" id="metric-views">345.7k</span>
+            <span class="metric-num" id="metric-views">395.0k</span>
             <div class="green-arrow-circle">
-              <svg viewBox="0 0 24 24"><path d="M12 4l-7 7h4v9h6v-9h4z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 4l-7 7h4v9h6v-9h4z"/>
+              </svg>
             </div>
           </div>
         </div>
@@ -108,9 +103,11 @@
         <div class="metric-card">
           <div class="metric-label">Watch time (hours)</div>
           <div class="metric-value-row">
-            <span class="metric-num" id="metric-watch">2.6k</span>
+            <span class="metric-num" id="metric-watch">3.0k</span>
             <div class="green-arrow-circle">
-              <svg viewBox="0 0 24 24"><path d="M12 4l-7 7h4v9h6v-9h4z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 4l-7 7h4v9h6v-9h4z"/>
+              </svg>
             </div>
           </div>
         </div>
@@ -118,7 +115,7 @@
         <div class="metric-card">
           <div class="metric-label">Subscribers</div>
           <div class="metric-value-row">
-            <span class="metric-num" id="metric-subs">+544</span>
+            <span class="metric-num" id="metric-subs">+601</span>
           </div>
         </div>
         <!-- Estimated revenue -->
@@ -134,102 +131,150 @@
     <!-- Latest Published Content Section -->
     <div class="latest-content-section">
       <div class="section-title">Latest published content</div>
-      <div class="latest-card">
-        
-        <div class="video-row">
-          <img class="video-thumbnail" id="video-thumbnail" src="../assets/thumbnails/thumb_1.png" alt="Video Thumb">
-          <div class="video-details">
-            <div class="video-title" id="video-title">Insane 1v4 Clutch Win! Ranked Match Gameplay</div>
-            <div class="video-time" id="video-time">First 3 hours, 58 minutes</div>
+
+      <!-- Video Card 1 -->
+      <div class="video-card-item">
+        <div class="video-card-top">
+          <img class="video-card-thumb" id="video-thumbnail" src="../assets/thumbnails/thumb_1.png" alt="Video 1">
+          <div class="video-card-meta">
+            <div class="video-card-title" id="video-title">Building a 200,000 Inhabitant Metropolis! Anno 1800 Timelapse</div>
+            <div class="video-card-time" id="video-time">First 5 hours, 46 minutes</div>
           </div>
         </div>
-
-        <div class="quick-stats-row">
-          <div class="stats-items">
-            <div class="stat-item">
-              <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
-              <span id="quick-views">2.4k</span>
+        <div class="video-card-divider"></div>
+        <div class="video-card-bottom">
+          <div class="video-card-stats">
+            <div class="stat-pill">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16v-3"/></svg>
+              <span id="quick-views">5.8k</span>
             </div>
-            <div class="stat-item">
-              <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
-              <span id="quick-likes">29</span>
+            <div class="stat-pill">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+              <span id="quick-likes">142</span>
             </div>
-            <div class="stat-item">
-              <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-              <span id="quick-comments">21</span>
+            <div class="stat-pill">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/></svg>
+              <span id="quick-comments">38</span>
             </div>
           </div>
-          <div class="up-chevron">
-            <svg viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
-          </div>
+          <svg class="chevron-down" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#717171" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-
-        <div class="divider"></div>
-
-        <div class="details-list">
-          <div class="detail-item">
-            <span class="detail-label">Ranking by views</span>
-            <span class="detail-val" id="detail-ranking">2 of 10 &nbsp;›</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Views</span>
-            <span class="detail-val" id="detail-views">2.4k</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">
-              Thumbnail click-through rate 
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#606060"><path d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z"/></svg>
-            </span>
-            <span class="detail-val" id="detail-ctr">13.3%</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Average view duration</span>
-            <span class="detail-val" id="detail-duration">2:19</span>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="comment-block">
-          <div class="comment-header">
-            <span>Comments</span>
-            <span id="detail-comments-count">21</span>
-          </div>
-          <div class="comment-sub">No unresponded comments</div>
-        </div>
-
       </div>
 
-      <!-- Second card peeking slightly -->
-      <div class="peek-card"></div>
+      <!-- Video Card 2 -->
+      <div class="video-card-item">
+        <div class="video-card-top">
+          <img class="video-card-thumb vertical-short" id="video-thumbnail-2" src="../assets/thumbnails/thumb_2.png" alt="Video 2">
+          <div class="video-card-meta">
+            <div class="video-card-title" id="video-title-2">The Most Efficient Harbor Setup You've Ever Seen (Anno 1800)</div>
+            <div class="video-card-time" id="video-time-2">First 8 hours, 1 minutes</div>
+          </div>
+        </div>
+        <div class="video-card-divider"></div>
+        <div class="video-card-bottom">
+          <div class="video-card-stats">
+            <div class="stat-pill">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16v-3"/></svg>
+              <span id="quick-views-2">8.4k</span>
+            </div>
+            <div class="stat-pill">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+              <span id="quick-likes-2">219</span>
+            </div>
+            <div class="stat-pill">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/></svg>
+              <span id="quick-comments-2">56</span>
+            </div>
+          </div>
+          <svg class="chevron-down" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#717171" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+
+      <!-- Video Card 3 -->
+      <div class="video-card-item">
+        <div class="video-card-top">
+          <img class="video-card-thumb vertical-short" id="video-thumbnail-3" src="../assets/thumbnails/thumb_3.png" alt="Video 3">
+          <div class="video-card-meta">
+            <div class="video-card-title" id="video-title-3">Hardcore Mode: Turning a Desert Island into a Mega Empire</div>
+            <div class="video-card-time" id="video-time-3">First 21 hours, 22 minutes</div>
+          </div>
+        </div>
+        <div class="video-card-divider"></div>
+        <div class="video-card-bottom">
+          <div class="video-card-stats">
+            <div class="stat-pill">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16v-3"/></svg>
+              <span id="quick-views-3">4.2k</span>
+            </div>
+            <div class="stat-pill">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+              <span id="quick-likes-3">95</span>
+            </div>
+            <div class="stat-pill">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/></svg>
+              <span id="quick-comments-3">34</span>
+            </div>
+          </div>
+          <svg class="chevron-down" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#717171" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+
     </div>
 
   </div>
 
-  <!-- Bottom Navigation Tab Bar -->
+  <!-- Bottom Navigation Tab Bar (Enlarged authentic icons & labels) -->
   <div class="bottom-bar">
     <div class="tab-item active">
-      <svg width="34" height="34" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="#000000">
+        <rect x="3" y="3" width="7.5" height="7.5" rx="2"/>
+        <rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/>
+        <rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/>
+        <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/>
+      </svg>
       <span>Dashboard</span>
     </div>
     <div class="tab-item">
-      <svg width="34" height="34" viewBox="0 0 24 24" fill="#606060"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="4" width="20" height="16" rx="3"/>
+        <polygon fill="currentColor" stroke="none" points="10,8 16,12 10,16"/>
+      </svg>
       <span>Content</span>
     </div>
     <div class="tab-item">
-      <svg width="34" height="34" viewBox="0 0 24 24" fill="#606060"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="3"/>
+        <line x1="8" y1="17" x2="8" y2="12"/>
+        <line x1="12" y1="17" x2="12" y2="8"/>
+        <line x1="16" y1="17" x2="16" y2="14"/>
+      </svg>
       <span>Analytics</span>
     </div>
     <div class="tab-item">
-      <svg width="34" height="34" viewBox="0 0 24 24" fill="#606060"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
       <span>Community</span>
     </div>
     <div class="tab-item">
-      <svg width="34" height="34" viewBox="0 0 24 24" fill="#606060"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M12 6v12M15 9.5c0-1.5-1.3-2.5-3-2.5s-3 1-3 2.5 1.5 2 3 2.5 3 1 3 2.5-1.3 2.5-3 2.5-3-1-3-2.5"/>
+      </svg>
       <span>Earn</span>
     </div>
+
+    <!-- iOS Home Indicator -->
+    <div class="home-indicator"></div>
   </div>
-  <div class="home-indicator"></div>
+
+  <!-- Floating Viral Clickbait Overlay in Lower 3rd (Above Screenshots) -->
+  <div class="clickbait-overlay" id="clickbait-overlay">
+    <div class="clickbait-text" id="clickbait-text">Use this audio to<br>gain 1M views</div>
+  </div>
 
   <!-- Confetti Canvas -->
   <canvas id="confetti-canvas"></canvas>

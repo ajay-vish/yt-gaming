@@ -58,8 +58,8 @@ def main():
     parser.add_argument(
         "--duration",
         type=float,
-        default=14.0,
-        help="Total video duration in seconds (recommended 12-15s for Shorts)."
+        default=None,
+        help="Total video duration in seconds (default: random 5-10s)."
     )
     parser.add_argument(
         "--mode",
@@ -72,6 +72,11 @@ def main():
         choices=["auto", "light", "dark"],
         default="auto",
         help="Color theme for live stage: 'auto' (random), 'light', or 'dark'."
+    )
+    parser.add_argument(
+        "--clickbait-text",
+        default=None,
+        help="Bold viral text overlay (e.g. 'Use this audio to gain 1M views')."
     )
     parser.add_argument(
         "--output",
@@ -93,6 +98,9 @@ def main():
     WORK_DIR.mkdir(parents=True, exist_ok=True)
     out_path = Path(args.output).resolve()
 
+    import random
+    duration_sec = args.duration if args.duration is not None else round(random.uniform(5.0, 10.0), 1)
+
     print("=" * 70)
     print("Generating YouTube Studio Counter Test Video")
     print("=" * 70)
@@ -101,7 +109,9 @@ def main():
     print(f"Counter: {args.start:,} -> {args.end:,}")
     print(f"Mode: {args.mode}")
     print(f"Theme: {args.theme}")
-    print(f"Duration: {args.duration}s")
+    print(f"Duration: {duration_sec}s (randomized between 5 to 10 sec)" if args.duration is None else f"Duration: {duration_sec}s")
+    if args.clickbait_text:
+        print(f"Banner: {args.clickbait_text}")
     print(f"Output: {out_path}")
     print("=" * 70)
 
@@ -111,9 +121,8 @@ def main():
         channel_handle=args.channel_handle,
         start_count=args.start,
         end_count=args.end,
-        duration_sec=args.duration,
-        hold_start_sec=2.0,
-        hold_end_sec=3.5,
+        duration_sec=duration_sec,
+        clickbait_text=args.clickbait_text,
         mode=args.mode,
         theme=args.theme,
         milestone_message=f"{args.end:,} SUBSCRIBERS UNLOCKED!",

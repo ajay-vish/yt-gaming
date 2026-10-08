@@ -44,113 +44,99 @@ def get_ffmpeg_exe() -> str:
         pass
     raise RuntimeError("FFmpeg executable could not be found. Run: pip install imageio-ffmpeg")
 
-RANDOM_VIDEOS_POOL = [
-    {
-        "title": "Insane 1v4 Clutch Win! Ranked Match Gameplay",
-        "time": "First 3 hours, 58 minutes",
-        "thumbnail": ASSETS_DIR / "thumbnails" / "thumb_1.png",
-        "ranking": "2 of 10 ›",
-        "views": 2.4,
-        "likes": 29,
-        "comments": 21,
-        "ctr": "13.3%",
-        "avd": "2:19",
-    },
-    {
-        "title": "GTA 6 Official Gameplay Leaks Breakdown & Secrets",
-        "time": "First 5 hours, 12 minutes",
-        "thumbnail": ASSETS_DIR / "thumbnails" / "thumb_2.png",
-        "ranking": "1 of 10 ›",
-        "views": 8.7,
-        "likes": 142,
-        "comments": 68,
-        "ctr": "16.8%",
-        "avd": "3:42",
-    },
-    {
-        "title": "I Survived 100 Days in Hardcore Minecraft (World Tour)",
-        "time": "First 1 day, 2 hours",
-        "thumbnail": ASSETS_DIR / "thumbnails" / "thumb_3.png",
-        "ranking": "1 of 10 ›",
-        "views": 14.2,
-        "likes": 310,
-        "comments": 124,
-        "ctr": "18.2%",
-        "avd": "5:15",
-    },
-    {
-        "title": "Zero Recoil Secret Weapon Loadout! (After Season Update)",
-        "time": "First 4 hours, 45 minutes",
-        "thumbnail": ASSETS_DIR / "thumbnails" / "thumb_4.png",
-        "ranking": "3 of 10 ›",
-        "views": 4.1,
-        "likes": 88,
-        "comments": 35,
-        "ctr": "12.4%",
-        "avd": "2:54",
-    },
-    {
-        "title": "Unbeaten 10 Win Streak to Radiant Rank (Full Gameplay)",
-        "time": "First 6 hours, 20 minutes",
-        "thumbnail": ASSETS_DIR / "thumbnails" / "thumb_5.png",
-        "ranking": "2 of 10 ›",
-        "views": 6.8,
-        "likes": 195,
-        "comments": 52,
-        "ctr": "14.9%",
-        "avd": "3:18",
-    },
+sys.path.insert(0, str(SCRIPTS_DIR))
+try:
+    from gaming_titles import GAMING_TITLES_POOL
+except ImportError:
+    GAMING_TITLES_POOL = ["Epic Gaming Strategy & Highlights"]
+
+AVAILABLE_THUMBS = [
+    ASSETS_DIR / "thumbnails" / f"thumb_{i}.png" for i in range(1, 7)
+    if (ASSETS_DIR / "thumbnails" / f"thumb_{i}.png").exists()
 ]
+if not AVAILABLE_THUMBS:
+    AVAILABLE_THUMBS = [ASSETS_DIR / "thumbnails" / "thumb_1.png"]
 
-def generate_journey_steps(start_count: int, avatar_uri: str) -> list[dict]:
-    """
-    Generates 3 realistic previous milestone snapshot steps that lead up to start_count.
-    Each snapshot has:
-      - realistic lower sub counts (starting from low numbers)
-      - realistic timestamps (morning, afternoon, evening)
-      - realistic themes (light / dark)
-      - realistic battery levels
-      - random title and thumbnail from pool
-    """
-    if start_count <= 25:
-        s1 = 1
-        s2 = max(2, int(start_count * 0.35))
-        s3 = max(3, int(start_count * 0.70))
-    elif start_count <= 105:
-        s1 = random.randint(3, 7)       # e.g. 5
-        s2 = random.randint(18, 32)     # e.g. 25
-        s3 = random.randint(55, 75)     # e.g. 68
-    elif start_count <= 270:
-        s1 = random.randint(8, 16)      # e.g. 12
-        s2 = random.randint(50, 85)     # e.g. 70
-        s3 = random.randint(140, 185)   # e.g. 165
-    elif start_count <= 550:
-        s1 = random.randint(15, 30)     # e.g. 24
-        s2 = random.randint(110, 160)   # e.g. 135
-        s3 = random.randint(280, 360)   # e.g. 320
-    elif start_count <= 1100:
-        s1 = random.randint(25, 55)     # e.g. 40
-        s2 = random.randint(220, 340)   # e.g. 280
-        s3 = random.randint(620, 780)   # e.g. 710
-    else:
-        s1 = random.randint(80, 160)    # e.g. 140
-        s2 = random.randint(450, 750)   # e.g. 620
-        s3 = random.randint(int(start_count * 0.60), int(start_count * 0.75)) # e.g. 1450
+def build_random_cards(count: int = 3, avatar_uri: str = "") -> list[dict]:
+    """Builds random gaming video cards sampled from 100 gaming titles and uploaded thumbnails."""
+    titles = random.sample(GAMING_TITLES_POOL, min(count, len(GAMING_TITLES_POOL)))
+    thumbs_pool = [t for t in AVAILABLE_THUMBS if t.exists()]
+    if not thumbs_pool:
+        thumbs_pool = AVAILABLE_THUMBS
 
-    steps_subs = [s1, s2, s3]
-    sampled_vids = random.sample(RANDOM_VIDEOS_POOL, 3)
+    chosen_thumbs = random.sample(thumbs_pool, min(count, len(thumbs_pool)))
+    while len(chosen_thumbs) < count:
+        chosen_thumbs.append(random.choice(thumbs_pool))
 
-    step_configs = [
-        {"theme": "light", "hour": random.randint(8, 10), "min": random.randint(5, 50), "battery": random.randint(88, 96), "time_label": "First 2 days, 4 hours"},
-        {"theme": random.choice(["light", "dark"]), "hour": random.randint(1, 4), "min": random.randint(5, 50), "battery": random.randint(60, 74), "time_label": "First 1 day, 6 hours"},
-        {"theme": "dark", "hour": random.randint(8, 11), "min": random.randint(5, 50), "battery": random.randint(32, 46), "time_label": "First 8 hours, 20 minutes"}
+    time_templates = [
+        "First {h} hours, {m} minutes",
+        "First {h} hours, {m} minutes",
+        "First {d} days, {h} hours",
+        "First {d} day, {h} hours",
+        "First 48 minutes",
     ]
 
+    cards = []
+    for i in range(count):
+        t = titles[i]
+        thumb = chosen_thumbs[i]
+        thumb_uri = thumb.resolve().as_uri() if thumb.exists() else avatar_uri
+
+        v_views_num = round(random.uniform(2.1, 16.5), 1)
+        v_likes_num = max(15, int(v_views_num * random.uniform(18, 28)))
+        v_comments_num = max(5, int(v_likes_num * random.uniform(0.18, 0.32)))
+
+        tpl = random.choice(time_templates)
+        time_str = tpl.format(
+            h=random.randint(1, 14),
+            m=random.randint(4, 58),
+            d=random.randint(1, 3)
+        )
+        cards.append({
+            "title": t,
+            "time": time_str,
+            "thumbUrl": thumb_uri,
+            "views": f"{v_views_num}k",
+            "likes": str(v_likes_num),
+            "comments": str(v_comments_num),
+        })
+    return cards
+
+def generate_subs_progression(start_count: int, num_steps: int) -> list[int]:
+    """Generates an authentic viral growth curve of subscriber counts up to start_count."""
+    if start_count <= 50:
+        base_start = max(1, int(start_count * 0.1))
+    elif start_count <= 500:
+        base_start = random.randint(10, 40)
+    elif start_count <= 1500:
+        base_start = random.randint(40, 100)
+    else:
+        base_start = random.randint(80, 160)
+
+    points = [base_start]
+    remaining = num_steps - 1
+    for i in range(1, num_steps):
+        ratio = (i / remaining) ** 1.6
+        val = int(base_start + (start_count - base_start) * ratio)
+        val = max(points[-1] + random.randint(10, 45), val)
+        val = min(val, start_count - (remaining - i) * 2)
+        points.append(val)
+    return points
+
+def generate_journey_steps(start_count: int, avatar_uri: str, num_steps: int = 6) -> list[dict]:
+    """
+    Generates multi-screenshot journey steps (each lasting exactly 0.5s).
+    Every screenshot has 3 randomized gaming cards, realistic time, battery, theme, and sub count.
+    """
+    steps_subs = generate_subs_progression(start_count, num_steps)
     steps = []
-    for i in range(3):
+
+    for i in range(num_steps):
         subs_val = steps_subs[i]
-        vid = sampled_vids[i]
-        cfg = step_configs[i]
+        theme_val = "light" if i % 2 == 0 else "dark"
+        hour_val = random.randint(8, 11) if theme_val == "dark" else random.randint(1, 5)
+        min_val = random.randint(5, 55)
+        battery_val = random.randint(30, 95)
 
         ch_views = subs_val * random.uniform(90, 140)
         views_str = f"{ch_views / 1000:.1f}k" if ch_views >= 1000 else f"{int(ch_views)}"
@@ -160,32 +146,40 @@ def generate_journey_steps(start_count: int, avatar_uri: str) -> list[dict]:
 
         subs_gain_val = max(1, int(subs_val * random.uniform(0.35, 0.65)))
 
-        v_views = max(100, int(subs_val * random.uniform(4, 9)))
-        v_views_str = f"{v_views / 1000:.1f}k" if v_views >= 1000 else f"{v_views}"
-        v_likes = max(2, int(v_views * 0.016))
-        v_comments = max(1, int(v_likes * 0.35))
-
-        thumb_asset = vid["thumbnail"]
-        thumb_uri = thumb_asset.resolve().as_uri() if thumb_asset.exists() else avatar_uri
+        cards = build_random_cards(3, avatar_uri)
 
         steps.append({
-            "timeHour": cfg["hour"],
-            "timeMin": cfg["min"],
-            "theme": cfg["theme"],
-            "battery": cfg["battery"],
+            "timeHour": hour_val,
+            "timeMin": min_val,
+            "theme": theme_val,
+            "battery": battery_val,
             "subs": subs_val,
             "views": views_str,
             "watch": watch_str,
             "subsGain": f"+{subs_gain_val}",
-            "title": vid["title"],
-            "videoTime": cfg["time_label"],
-            "thumbUrl": thumb_uri,
-            "vViews": v_views_str,
-            "vLikes": v_likes,
-            "vComments": v_comments
+            "cards": cards,
+            # Top-level backwards compatibility fields
+            "title": cards[0]["title"],
+            "videoTime": cards[0]["time"],
+            "thumbUrl": cards[0]["thumbUrl"],
+            "vViews": cards[0]["views"],
+            "vLikes": cards[0]["likes"],
+            "vComments": cards[0]["comments"]
         })
 
     return steps
+
+CLICKBAIT_PHRASES = [
+    "Use this audio to gain 1M views",
+    "Use this audio to gain 100K Subs",
+    "Use this audio to get 1M views in 24 hours 📈",
+    "Use this audio to blow up your channel 🚀",
+    "Use this sound to get 10M views instantly ⚡",
+    "Use this sound to gain 100K Subs this week 🔥",
+    "Use this audio to go viral overnight ✨",
+    "Use this sound to gain 50K Subs today 🎯",
+    "Use this audio for instant 1M views 🤯",
+]
 
 def render_counter_video(
     template_name: str = "ask_studio",
@@ -193,12 +187,13 @@ def render_counter_video(
     channel_handle: str = "@askgaming",
     avatar_path: str = None,
     video_thumb_path: str = None,
-    start_count: int = 2151,
+    start_count: int = 2157,
     end_count: int = 2200,
-    duration_sec: float = 14.0,
-    hold_start_sec: float = 2.0,
-    hold_end_sec: float = 3.5,
+    duration_sec: float = None,
+    hold_start_sec: float = None,
+    hold_end_sec: float = None,
     milestone_message: str = None,
+    clickbait_text: str = None,
     mode: str = "journey",
     theme: str = "auto",
     base_views: float = None,
@@ -210,6 +205,18 @@ def render_counter_video(
     include_bgm: bool = True
 ) -> Path:
     from playwright.sync_api import sync_playwright
+
+    # Default duration 5.5s (3.5s journey at 0.5s/step + 2.0s frozen final milestone)
+    if duration_sec is None:
+        duration_sec = 5.5
+
+    if hold_end_sec is None:
+        hold_end_sec = 2.0
+    else:
+        hold_end_sec = min(hold_end_sec, round(duration_sec * 0.4, 1))
+
+    if hold_start_sec is None:
+        hold_start_sec = 0.5
 
     WORK_DIR.mkdir(parents=True, exist_ok=True)
     if output_path is None:
@@ -230,17 +237,12 @@ def render_counter_video(
     else:
         avatar_file = (ASSETS_DIR / "default_avatar.png").resolve()
 
-    # Pick random recent video card from pool
-    chosen_video = random.choice(RANDOM_VIDEOS_POOL)
-    thumb_path = chosen_video["thumbnail"]
-    if video_thumb_path and Path(video_thumb_path).exists():
-        thumb_file = Path(video_thumb_path).resolve()
-    elif thumb_path.exists():
-        thumb_file = thumb_path.resolve()
-    elif (ASSETS_DIR / "video_thumb.png").exists():
-        thumb_file = (ASSETS_DIR / "video_thumb.png").resolve()
-    else:
-        thumb_file = avatar_file
+    # Generate 3 random gaming cards for final milestone stage
+    final_cards = build_random_cards(3, avatar_file.as_uri())
+    chosen_card = final_cards[0]
+    extra_videos_data = final_cards[1:]
+
+    thumb_file = Path(video_thumb_path).resolve() if video_thumb_path and Path(video_thumb_path).exists() else avatar_file
 
     if not milestone_message:
         milestone_message = f"{end_count:,} SUBSCRIBERS UNLOCKED!"
@@ -249,7 +251,7 @@ def render_counter_video(
     if theme in ("dark", "light"):
         live_theme = theme
     else:
-        live_theme = random.choice(["dark", "light"])
+        live_theme = "light" if template_name == "ask_studio" else random.choice(["dark", "light"])
 
     # Clock time and battery for live stage
     if live_theme == "dark":
@@ -274,16 +276,29 @@ def render_counter_video(
     ding_sound = SOUNDS_DIR / "milestone_ding.wav"
     riser_sound = SOUNDS_DIR / "riser.wav"
     shutter_sound = SOUNDS_DIR / "shutter.wav"
-    bgm_sound = SOUNDS_DIR / "bgm_trending.mp3"
+
+    # Select random trending background song from assets/sounds/bgm/
+    bgm_pool = list((SOUNDS_DIR / "bgm").glob("*.mp3"))
+    if bgm_pool:
+        bgm_sound = random.choice(bgm_pool)
+        print(f"🎵 Using trending background track: {bgm_sound.name}")
+    else:
+        bgm_sound = SOUNDS_DIR / "bgm_trending.mp3"
 
     if include_sound and (not tick_sound.exists() or not ding_sound.exists() or not shutter_sound.exists()):
         from sound_synth import build_all_sounds
         build_all_sounds()
 
-    # Journey steps
+    # Clickbait banner text
+    if not clickbait_text:
+        clickbait_text = random.choice(CLICKBAIT_PHRASES)
+
+    # Journey steps (each step lasts exactly 0.5s)
     journey_steps = []
     if mode == "journey":
-        journey_steps = generate_journey_steps(start_count, avatar_file.as_uri())
+        journey_duration = max(1.5, duration_sec - hold_end_sec)
+        num_steps = max(3, int(round(journey_duration / 0.5)))
+        journey_steps = generate_journey_steps(start_count, avatar_file.as_uri(), num_steps=num_steps)
 
     config_data = {
         "mode": mode,
@@ -291,24 +306,27 @@ def render_counter_video(
         "channelName": channel_name,
         "channelHandle": channel_handle,
         "avatarUrl": avatar_file.as_uri(),
-        "videoThumbUrl": thumb_file.as_uri(),
+        "videoThumbUrl": chosen_card["thumbUrl"],
         "startCount": start_count,
         "endCount": end_count,
         "durationSec": duration_sec,
         "holdStartSec": hold_start_sec,
         "holdEndSec": hold_end_sec,
+        "clickbaitText": clickbait_text,
+        "finalCards": final_cards,
+        "extraVideos": extra_videos_data,
         "baseViews": base_views,
         "baseWatchTime": base_watch_time,
         "baseSubsGain": base_subs_gain,
         "revenue": revenue,
-        "recentVideoTitle": chosen_video["title"],
-        "recentVideoTime": chosen_video["time"],
-        "ranking": chosen_video["ranking"],
-        "baseVideoViews": chosen_video["views"],
-        "baseVideoLikes": chosen_video["likes"],
-        "videoComments": chosen_video["comments"],
-        "ctr": chosen_video["ctr"],
-        "avd": chosen_video["avd"],
+        "recentVideoTitle": chosen_card["title"],
+        "recentVideoTime": chosen_card["time"],
+        "ranking": "1 of 10 ›",
+        "baseVideoViews": float(chosen_card["views"].replace("k", "")),
+        "baseVideoLikes": int(chosen_card["likes"]),
+        "videoComments": int(chosen_card["comments"]),
+        "ctr": f"{random.uniform(12.5, 17.5):.1f}%",
+        "avd": f"{random.randint(2, 4)}:{random.randint(10, 59):02d}",
         "startTimeHour": live_hour,
         "startTimeMinute": live_minute,
         "batteryPercent": live_battery,
@@ -378,7 +396,7 @@ def render_counter_video(
 
     # Build audio filter graph if sounds are included
     if include_sound and tick_sound.exists() and ding_sound.exists():
-        inputs = ["-i", str(recorded_raw_video), "-i", str(tick_sound), "-i", str(ding_sound)]
+        inputs = ["-ss", "0.50", "-i", str(recorded_raw_video), "-i", str(tick_sound), "-i", str(ding_sound)]
         
         # Audio indices:
         # 0: video
@@ -412,7 +430,7 @@ def render_counter_video(
             for s_idx, ev in enumerate(shutter_events):
                 t_ms = max(0, int(ev.get("timeMs", 0)))
                 label = f"shutter_{s_idx}"
-                filter_parts.append(f"[{shutter_input_idx}:a]adelay={t_ms}|{t_ms},volume=0.75[{label}]")
+                filter_parts.append(f"[{shutter_input_idx}:a]adelay={t_ms}|{t_ms},volume=0.45[{label}]")
                 mix_inputs.append(f"[{label}]")
 
         # 2. Sampled tick pops during live counter count-up
@@ -426,8 +444,8 @@ def render_counter_video(
                     filter_parts.append(f"[1:a]adelay={delay_ms}|{delay_ms},volume=0.85[{label}]")
                     mix_inputs.append(f"[{label}]")
 
-        # 3. Anticipation Riser
-        if riser_input_idx is not None:
+        # 3. Anticipation Riser (only if active count-up ticks exist)
+        if riser_input_idx is not None and tick_events:
             riser_delay_ms = max(1, int((milestone_sec - 1.1) * 1000))
             filter_parts.append(f"[{riser_input_idx}:a]adelay={riser_delay_ms}|{riser_delay_ms},volume=0.45[riser_delayed]")
             mix_inputs.append("[riser_delayed]")
@@ -439,8 +457,9 @@ def render_counter_video(
 
         # 5. Trending Shorts Background Music (trimmed with volume control & gentle fade-out)
         if bgm_input_idx is not None:
-            fade_start = max(0.5, duration_sec - 0.9)
-            filter_parts.append(f"[{bgm_input_idx}:a]atrim=0:{duration_sec},volume=0.28,afade=t=out:st={fade_start:.2f}:d=0.8[bgm_out]")
+            fade_duration = min(0.8, round(duration_sec * 0.1, 2))
+            fade_start = max(0.5, duration_sec - fade_duration)
+            filter_parts.append(f"[{bgm_input_idx}:a]atrim=0:{duration_sec},volume=0.42,afade=t=out:st={fade_start:.2f}:d={fade_duration:.2f}[bgm_out]")
             mix_inputs.append("[bgm_out]")
 
         filter_parts.append(f"{''.join(mix_inputs)}amix=inputs={len(mix_inputs)}:normalize=0:duration=longest[aout]")
@@ -459,6 +478,7 @@ def render_counter_video(
     else:
         cmd = [
             ffmpeg_exe, "-y",
+            "-ss", "0.50",
             "-i", str(recorded_raw_video),
             "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "18", "-preset", "fast",
             "-t", str(duration_sec),
@@ -482,10 +502,11 @@ def main():
     parser.add_argument("--thumb", default=None, help="Path to video thumbnail image.")
     parser.add_argument("--start", type=int, default=2151, help="Starting subscriber count.")
     parser.add_argument("--end", type=int, default=2200, help="Target milestone subscriber count.")
-    parser.add_argument("--duration", type=float, default=14.0, help="Video duration in seconds.")
+    parser.add_argument("--duration", type=float, default=None, help="Video duration in seconds (random 5-10s if omitted).")
     parser.add_argument("--mode", choices=["journey", "live"], default="journey", help="Video progression mode.")
     parser.add_argument("--theme", choices=["auto", "light", "dark"], default="auto", help="App color theme.")
     parser.add_argument("--milestone-message", default=None, help="Celebration banner message.")
+    parser.add_argument("--clickbait-text", default=None, help="Bold viral text overlay (e.g. 'Use this audio to gain 1M views').")
     parser.add_argument("--views", type=float, default=None, help="Base views in thousands (e.g. 345.7).")
     parser.add_argument("--watch-time", type=float, default=None, help="Base watch time in thousands (e.g. 2.6).")
     parser.add_argument("--subs-metric", type=int, default=None, help="Base subscribers gain (e.g. 544).")
@@ -508,6 +529,7 @@ def main():
         mode=args.mode,
         theme=args.theme,
         milestone_message=args.milestone_message,
+        clickbait_text=args.clickbait_text,
         base_views=args.views,
         base_watch_time=args.watch_time,
         base_subs_gain=args.subs_metric,

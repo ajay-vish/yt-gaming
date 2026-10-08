@@ -331,10 +331,12 @@ def run_pipeline(force_counts: tuple[int, int] = None) -> int:
         start_count, target_count = compute_next_milestone(current_subs, last_increment)
 
     increment = target_count - start_count
+    clip_duration = round(random.uniform(5.0, 10.0), 1)
 
     print("=" * 70)
     print(f"Branding: {channel_name} ({channel_handle})")
     print(f"Video #{state.get('video_index', 0) + 1} Progression: {start_count:,} -> {target_count:,} (+{increment:,} subs)")
+    print(f"Clip Duration: {clip_duration}s (randomized between 5 to 10 sec)")
     print(f"Target Upload Slot: {publish_at}")
     print("=" * 70)
 
@@ -348,9 +350,7 @@ def run_pipeline(force_counts: tuple[int, int] = None) -> int:
         channel_handle=channel_handle,
         start_count=start_count,
         end_count=target_count,
-        duration_sec=14.0,
-        hold_start_sec=2.0,
-        hold_end_sec=3.5,
+        duration_sec=clip_duration,
         mode="journey",
         theme="auto",
         milestone_message=f"{target_count:,} SUBSCRIBERS UNLOCKED!",

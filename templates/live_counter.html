@@ -385,9 +385,9 @@
 
     const startTime = performance.now();
     const totalDurationMs = config.durationSec * 1000;
-    const holdStartMs = config.holdStartSec * 1000;
-    const holdEndMs = config.holdEndSec * 1000;
-    const activeAnimationMs = totalDurationMs - holdStartMs - holdEndMs;
+    const holdStartMs = Math.min(config.holdStartSec * 1000, totalDurationMs * 0.2);
+    const holdEndMs = Math.min(config.holdEndSec * 1000, totalDurationMs * 0.3);
+    const activeAnimationMs = Math.max(800, totalDurationMs - holdStartMs - holdEndMs);
     let milestoneTriggered = false;
 
     window.TICK_EVENTS = [];
