@@ -1,0 +1,70 @@
+name: Daily YouTube Studio Counter Short
+
+on:
+  schedule:
+    # Runs daily once at 01:30 UTC (07:00 AM IST) to schedule for that day's random slot (8:00 AM, 5:30 PM, or 8:30 PM IST)
+    - cron: "30 1 * * *"
+    
+  workflow_dispatch:
+    inputs:
+      start_count:
+        description: "Starting subscriber count (leave empty for automatic)"
+        required: false
+        type: string
+      target_count:
+        description: "Target milestone subscriber count (leave empty for automatic)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  make-counter-short:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: 'pip'
+          cache-dependency-path: 'scripts/requirements.txt'
+
+      - name: Install system dependencies (FFmpeg & Fonts)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto fonts-noto-cjk
+
+      - name: Install Python dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+
+      - name: Install Playwright Chromium browser
+        run: |
+          playwright install chromium --with-deps
+
+      - name: Synthesize sound effects
+        run: |
+          python scripts/sound_synth.py
+
+      - name: Run Pipeline
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python scripts/pipeline.py
+
+      - name: Commit updated state and draft metadata
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "counter-bot"
+          git config user.email "counter-bot@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
+          git add state.json drafts/
+          git commit -m "Daily counter short: update state and drafts" || echo "Nothing to commit"
+          git push

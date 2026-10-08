@@ -4,6 +4,7 @@ Daily YouTube Studio Counter Automation Pipeline.
 Generates and schedules 1 YouTube Short daily celebrating progressive subscriber milestones.
 Randomly picks an optimal upload slot: Morning 8:00 AM IST, Evening 5:30 PM IST, or Evening 8:30 PM IST.
 Progressively scales milestone increments so each video's subscriber jump is greater than the last.
+Uses Gemini AI for high-CTR metadata generation and YouTube Data API v3 for upload.
 """
 
 import json
@@ -27,6 +28,15 @@ STATE_FILE = REPO_ROOT / "state.json"
 WORK_DIR = REPO_ROOT / "work"
 DRAFTS_DIR = REPO_ROOT / "drafts"
 ASSETS_DIR = REPO_ROOT / "assets"
+ENV_FILE = REPO_ROOT / ".env"
+
+# Auto-load .env
+if ENV_FILE.exists():
+    for line in ENV_FILE.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, v = line.split("=", 1)
+            os.environ.setdefault(k.strip(), v.strip())
 
 # Timezone & Slots
 try:
@@ -107,7 +117,6 @@ def compute_next_milestone(current_subs: int, last_increment: int = 0) -> tuple[
         gain = random.randint(1400, 1650)  # target ~3500
         target_count = start_count + gain
     else:
-        # Scale dynamically ensuring gain > last_increment
         min_gain = max(last_increment + random.randint(250, 500), int(start_count * 0.45))
         gain = random.randint(min_gain, min_gain + 350)
         target_count = start_count + gain
@@ -121,7 +130,6 @@ def get_random_daily_slot(state: dict) -> str:
     Guarantees exactly 1 upload per day without colliding with already scheduled slots.
     """
     now_utc = datetime.now(timezone.utc)
-    # Prune passed slots from state
     state["scheduled_slots"] = [
         s for s in state["scheduled_slots"]
         if datetime.fromisoformat(s.replace("Z", "+00:00")) > now_utc
@@ -131,11 +139,9 @@ def get_random_daily_slot(state: dict) -> str:
     now_ist = datetime.now(IST)
     today_ist = now_ist.date()
 
-    # Shuffle the daily slots to pick randomly
     for day_offset in range(14):
         target_day = today_ist + timedelta(days=day_offset)
         
-        # Check if this day already has an upload scheduled
         day_already_scheduled = False
         for s in taken:
             s_dt = datetime.fromisoformat(s.replace("Z", "+00:00")).astimezone(IST)
@@ -145,7 +151,6 @@ def get_random_daily_slot(state: dict) -> str:
         if day_already_scheduled:
             continue
 
-        # Shuffle the 3 candidate time slots
         candidate_slots = list(DAILY_SLOTS_IST)
         random.shuffle(candidate_slots)
 
@@ -203,6 +208,7 @@ def fetch_channel_stats(youtube) -> dict | None:
         snippet = ch.get("snippet", {})
         stats = ch.get("statistics", {})
         return {
+            "id": ch.get("id"),
             "title": snippet.get("title", DEFAULT_CHANNEL_NAME),
             "customUrl": snippet.get("customUrl", DEFAULT_CHANNEL_HANDLE),
             "subscribers": int(stats.get("subscriberCount", 5)),
@@ -225,27 +231,32 @@ def generate_metadata(channel_name: str, start_count: int, target_count: int) ->
 
             client = genai.Client(api_key=api_key)
             prompt = (
-                f"You are a YouTube Shorts growth strategist for the gaming channel '{channel_name}'. "
-                f"A new Short video was generated showing a real YouTube Studio screenshot animation "
-                f"where subscriber count increases from {start_count:,} to {target_count:,} with celebration confetti.\n\n"
-                f"Create viral YouTube Shorts metadata with high CTR and engagement.\n"
-                f"Return JSON with exactly these 3 keys:\n"
-                f"  'title': under 90 characters, emotional hook, milestone numbers, e.g. "
-                f"'{target_count:,} Subscribers! We Did It! 🥹🎉 #Shorts #YouTubeStudio'\n"
-                f"  'description': 3-4 short lines thanking subscribers, asking viewers to subscribe for next milestone, "
-                f"and 8 viral hashtags including #Shorts, #YouTubeStudio, #SubscriberCounter, #{channel_name.replace(' ', '')}\n"
-                f"  'tags': 15-20 relevant tags as array of strings."
+                f"You are an expert YouTube Shorts growth strategist for the gaming channel '{channel_name}', "
+                f"skilled at writing titles that match what currently trends and ranks well on YouTube Shorts.\n\n"
+                f"A new Short video was generated showing a photorealistic YouTube Studio screen recording "
+                f"where subscriber count increases live from {start_count:,} to {target_count:,} with celebration confetti and sound effects.\n\n"
+                f"Return a JSON object with exactly these three keys:\n"
+                f"  'title': under 90 characters. Lead with the strongest hook, emotion, and milestone numbers. E.g. '{target_count:,} Subscribers! We Did It! 🥹🎉 #Shorts #YouTubeStudio'\n"
+                f"  'description': 3-5 lines: thanking subscribers, asking viewers to subscribe for next milestone, and a final line with 8-10 viral hashtags including #Shorts, #YouTubeStudio, #SubscriberCount, #ASKGaming, #Gaming, #ViralShorts\n"
+                f"  'tags': array of 15-20 strings optimized for YouTube search ranking.\n\n"
+                f"Return only valid JSON - no markdown fences, no explanation."
             )
-            response = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt,
-                config=types.GenerateContentConfig(response_mime_type="application/json"),
-            )
-            data = json.loads(response.text)
-            title = str(data.get("title", f"{target_count:,} Subscribers! Milestone Reached! 🥹🎉 #Shorts"))[:100]
-            desc = str(data.get("description", ""))
-            tags = [str(t) for t in data.get("tags", DEFAULT_TAGS)][:20]
-            return title, desc, tags
+            models_to_try = ["gemini-3.8-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite"]
+            for m in models_to_try:
+                try:
+                    response = client.models.generate_content(
+                        model=m,
+                        contents=prompt,
+                        config=types.GenerateContentConfig(response_mime_type="application/json"),
+                    )
+                    data = json.loads(response.text)
+                    title = str(data.get("title", f"{target_count:,} Subscribers! Milestone Reached! 🥹🎉 #Shorts"))[:100]
+                    desc = str(data.get("description", ""))
+                    tags = [str(t) for t in data.get("tags", DEFAULT_TAGS)][:20]
+                    print(f"[Gemini AI ({m})] Generated title: {title}")
+                    return title, desc, tags
+                except Exception as model_err:
+                    print(f"[Gemini ({m})] Attempt failed: {model_err}")
         except Exception as e:
             print(f"[Gemini] Warning: {e}. Using optimized fallback metadata.")
 
@@ -255,7 +266,7 @@ def generate_metadata(channel_name: str, start_count: int, target_count: int) ->
         f"Thank you everyone for supporting {channel_name}! ❤️\n"
         f"We just hit {target_count:,} subscribers on YouTube Studio live!\n"
         f"Subscribe to be part of our next milestone! 🚀\n\n"
-        f"#Shorts #YouTubeStudio #SubscriberCount #{channel_name.replace(' ', '')} #ViralShorts #Trending #LiveSubCount"
+        f"#Shorts #YouTubeStudio #SubscriberCount #{channel_name.replace(' ', '')} #ViralShorts #Trending #LiveSubCount #Gaming"
     )
     tags = DEFAULT_TAGS
     return title, desc, tags
@@ -275,7 +286,7 @@ def upload_video(video_path: Path, title: str, description: str, tags: list[str]
             "title": title[:100],
             "description": description[:5000],
             "tags": tags,
-            "categoryId": "24",  # Entertainment
+            "categoryId": "20",  # Gaming
             "defaultLanguage": "en",
         },
         "status": status,
@@ -291,20 +302,27 @@ def run_pipeline(force_counts: tuple[int, int] = None) -> int:
     WORK_DIR.mkdir(parents=True, exist_ok=True)
     DRAFTS_DIR.mkdir(parents=True, exist_ok=True)
 
-    # 1. Reserve 1 random daily slot
+    # 1. Channel & Client Check
+    youtube = get_youtube_client()
+    live_stats = fetch_channel_stats(youtube) if youtube else None
+
+    # Keep branding consistent as ASK Gaming
+    channel_name = DEFAULT_CHANNEL_NAME
+    channel_handle = DEFAULT_CHANNEL_HANDLE
+
+    if live_stats:
+        print(f"[YouTube Auth] Connected to channel: {live_stats['title']} (ID: {live_stats['id']})")
+    else:
+        print(f"[YouTube Auth] Running in local preview mode (no YouTube client).")
+
+    # 2. Reserve 1 random daily slot
     try:
         publish_at = get_random_daily_slot(state)
     except RuntimeError as e:
         print(f"[Scheduler] {e}")
         return 0
 
-    # 2. Channel & Progressive Subscriber calculation
-    youtube = get_youtube_client()
-    live_stats = fetch_channel_stats(youtube) if youtube else None
-
-    channel_name = live_stats["title"] if live_stats else state.get("channel_name", DEFAULT_CHANNEL_NAME)
-    channel_handle = live_stats["customUrl"] if live_stats else state.get("channel_handle", DEFAULT_CHANNEL_HANDLE)
-
+    # 3. Progressive Subscriber calculation
     if force_counts:
         start_count, target_count = force_counts
     else:
@@ -315,12 +333,12 @@ def run_pipeline(force_counts: tuple[int, int] = None) -> int:
     increment = target_count - start_count
 
     print("=" * 70)
-    print(f"Channel: {channel_name} ({channel_handle})")
+    print(f"Branding: {channel_name} ({channel_handle})")
     print(f"Video #{state.get('video_index', 0) + 1} Progression: {start_count:,} -> {target_count:,} (+{increment:,} subs)")
     print(f"Target Upload Slot: {publish_at}")
     print("=" * 70)
 
-    # 3. Render Video
+    # 4. Render Video
     from render_video import render_counter_video
     video_out = WORK_DIR / f"counter_{target_count}_{int(datetime.now().timestamp())}.mp4"
     
@@ -341,7 +359,7 @@ def run_pipeline(force_counts: tuple[int, int] = None) -> int:
         include_bgm=True
     )
 
-    # 4. Generate AI Metadata
+    # 5. Generate AI Metadata with Gemini
     title, desc, tags = generate_metadata(channel_name, start_count, target_count)
     
     # Save draft text
@@ -349,7 +367,7 @@ def run_pipeline(force_counts: tuple[int, int] = None) -> int:
     draft_file.write_text(f"TITLE:\n{title}\n\nDESCRIPTION:\n{desc}\n\nTAGS:\n{', '.join(tags)}\n", encoding="utf-8")
     print(f"Saved metadata draft to {draft_file}")
 
-    # 5. Upload to YouTube (if authenticated)
+    # 6. Upload to YouTube (if authenticated)
     if youtube:
         try:
             uploaded_id = upload_video(video_out, title, desc, tags, publish_at, youtube)
@@ -361,13 +379,17 @@ def run_pipeline(force_counts: tuple[int, int] = None) -> int:
                 "publish_at": publish_at,
                 "uploaded_at": datetime.now(timezone.utc).isoformat()
             })
+            state["pending_comments"][uploaded_id] = {
+                "target_count": target_count,
+                "publish_at": publish_at
+            }
         except Exception as e:
             print(f"[Upload Error] Could not upload to YouTube: {e}")
     else:
-        print("\n[Notice] YouTube credentials not found in environment. Video rendered locally without upload.")
+        print("\n[Notice] Video rendered locally without upload.")
         print(f"Rendered video available at: {video_out}")
 
-    # 6. Update state for progressive growth
+    # 7. Update state for progressive growth
     state["current_subscribers"] = target_count
     state["last_increment"] = increment
     state["video_index"] = state.get("video_index", 0) + 1
