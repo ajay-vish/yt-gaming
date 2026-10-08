@@ -1,0 +1,109 @@
+/* =========================================
+   CHANNEL ANALYTICS SECTION
+   ========================================= */
+
+.analytics-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0 4px;
+}
+
+.section-title {
+  font-size: 34px;
+  font-weight: 700;
+  color: #0f0f0f;
+  letter-spacing: -0.2px;
+}
+
+.section-subtitle {
+  font-size: 24px;
+  color: #606060;
+  font-weight: 400;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Card Elevation: clean white surface with soft shadow on off-white background */
+.metric-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.02);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.metric-label {
+  font-size: 25px;
+  color: #606060;
+  font-weight: 400;
+}
+
+.metric-value-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.metric-num {
+  font-size: 40px;
+  font-weight: 700;
+  color: #0f0f0f;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+  transition: transform 0.12s ease;
+}
+
+.metric-num.ticking {
+  transform: scale(1.03);
+}
+
+.green-arrow-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #2ba640;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #ffffff;
+}
+
+/* --- Dark Theme Overrides for Channel Analytics --- */
+body.dark-theme .section-title {
+  color: #ffffff;
+}
+
+body.dark-theme .section-subtitle {
+  color: #aaaaaa;
+}
+
+body.dark-theme .metric-card {
+  background: #212121;
+  border-color: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-theme .metric-label {
+  color: #aaaaaa;
+}
+
+body.dark-theme .metric-num {
+  color: #ffffff;
+}

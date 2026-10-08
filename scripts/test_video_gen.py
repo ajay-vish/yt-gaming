@@ -84,6 +84,26 @@ def main():
         help="Output video file path."
     )
     parser.add_argument(
+        "--no-poll",
+        action="store_true",
+        help="Disable interactive poll popup sticker."
+    )
+    parser.add_argument(
+        "--poll-question",
+        default="Will you subscribe?",
+        help="Question text on the poll popup sticker."
+    )
+    parser.add_argument(
+        "--poll-opt1",
+        default="Yes",
+        help="Option 1 text."
+    )
+    parser.add_argument(
+        "--poll-opt2",
+        default="No but I'll like",
+        help="Option 2 text."
+    )
+    parser.add_argument(
         "--no-sound",
         action="store_true",
         help="Disable tick, shutter, and milestone chime audio effects."
@@ -109,6 +129,7 @@ def main():
     print(f"Counter: {args.start:,} -> {args.end:,}")
     print(f"Mode: {args.mode}")
     print(f"Theme: {args.theme}")
+    print(f"Poll Sticker: {'Disabled' if args.no_poll else f'{args.poll_question} ({args.poll_opt1} / {args.poll_opt2})'}")
     print(f"Duration: {duration_sec}s (randomized between 5 to 10 sec)" if args.duration is None else f"Duration: {duration_sec}s")
     if args.clickbait_text:
         print(f"Banner: {args.clickbait_text}")
@@ -125,6 +146,10 @@ def main():
         clickbait_text=args.clickbait_text,
         mode=args.mode,
         theme=args.theme,
+        show_poll=not args.no_poll,
+        poll_question=args.poll_question,
+        poll_opt1=args.poll_opt1,
+        poll_opt2=args.poll_opt2,
         milestone_message=f"{args.end:,} SUBSCRIBERS UNLOCKED!",
         output_path=out_path,
         include_sound=not args.no_sound,

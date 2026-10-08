@@ -1,0 +1,60 @@
+/* =========================================
+   YOUTUBE STUDIO TOP APP BAR
+   ========================================= */
+
+.app-bar {
+  height: 85px;
+  padding: 0 42px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 15;
+  background-color: #f7f7f8;
+  transition: background-color 0.2s ease;
+}
+
+.studio-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.studio-brand-title {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  color: #0f0f0f;
+  margin-left: 2px;
+}
+
+.app-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.action-icon {
+  color: #0f0f0f;
+  cursor: pointer;
+}
+
+.avatar-mini {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* --- Dark Theme Overrides for App Bar --- */
+body.dark-theme .app-bar {
+  background-color: #0f0f0f;
+}
+
+body.dark-theme .studio-brand-title {
+  color: #ffffff;
+}
+
+body.dark-theme .action-icon {
+  color: #ffffff;
+}

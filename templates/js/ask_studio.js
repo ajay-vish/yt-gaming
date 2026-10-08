@@ -1,5 +1,7 @@
 // Configuration defaults
 const CLICKBAIT_POOL = [
+  "USE THIS SOUND!",
+  "🤑<br>USE THIS SOUND!",
   "Use this audio to<br>gain 1M views",
   "Use this audio to<br>gain 100K Subs",
   "Use this audio to<br>get 1M views in 24 hours 📈",
@@ -22,6 +24,12 @@ const config = Object.assign({
   holdStartSec: 1.5,
   holdEndSec: 2.5,
   clickbaitText: CLICKBAIT_POOL[Math.floor(Math.random() * CLICKBAIT_POOL.length)],
+  // YouTube Poll Sticker
+  showPoll: true,
+  pollQuestion: "Will you subscribe?",
+  pollOption1: "Yes",
+  pollOption2: "No but I'll like",
+  pollVotes: "0 votes",
   // Base metrics that will count up live
   baseViews: 395.0,
   baseWatchTime: 3.0,
@@ -136,6 +144,18 @@ const clickbaitEl = document.getElementById("clickbait-text");
 if (clickbaitEl && config.clickbaitText) {
   clickbaitEl.innerHTML = formatClickbait(config.clickbaitText);
 }
+
+// YouTube Poll Sticker
+const pollEl = document.getElementById("poll-popup-sticker");
+if (config.showPoll === false) {
+  if (pollEl) pollEl.style.display = "none";
+} else {
+  if (pollEl) pollEl.style.display = "block";
+  safeText("poll-title", config.pollQuestion || "Will you subscribe?");
+  safeText("poll-option-1", config.pollOption1 || "Yes");
+  safeText("poll-option-2", config.pollOption2 || "No but I'll like");
+  safeText("poll-footer", config.pollVotes || "0 votes");
+}
 safeText("channel-name", config.channelName);
 safeSrc("channel-avatar", config.avatarUrl);
 safeSrc("avatar-mini", config.avatarUrl);
@@ -249,6 +269,7 @@ function applyCard(idx, data) {
 
 // Trigger Snapshot Transition (0.5s intervals, direct clean cut, zero flash)
 function performSnapshotTransition(stepData, elapsed) {
+  if (!stepData) return;
   window.SHUTTER_EVENTS.push({ timeMs: elapsed });
 
   if (stepData.theme === "dark") {
@@ -257,10 +278,10 @@ function performSnapshotTransition(stepData, elapsed) {
     document.body.classList.remove("dark-theme");
   }
 
-  const minStr = stepData.timeMin.toString().padStart(2, '0');
-  safeText("status-time", `${stepData.timeHour}:${minStr}`);
-  safeText("battery-percent", stepData.battery);
-  safeText("counter-val", Number(stepData.subs).toLocaleString());
+  const minStr = (stepData.timeMin || 0).toString().padStart(2, '0');
+  safeText("status-time", `${stepData.timeHour || 4}:${minStr}`);
+  safeText("battery-percent", stepData.battery || 75);
+  safeText("counter-val", Number(stepData.subs || 0).toLocaleString());
   safeText("metric-views", stepData.views);
   safeText("metric-watch", stepData.watch);
   safeText("metric-subs", stepData.subsGain);
@@ -360,14 +381,16 @@ if (isJourney) {
 }
 
 function updateTimeline(nowTimestamp) {
-  const elapsed = nowTimestamp - startTime;
+  const elapsed = Math.max(0, nowTimestamp - startTime);
 
   if (isJourney && elapsed < journeyDurationMs) {
     // Multi-Screenshot Journey Stage: step changes exactly every 0.5 seconds (500ms)
-    const targetStep = Math.min(config.journeySteps.length - 1, Math.floor(elapsed / STEP_INTERVAL_MS));
+    const targetStep = Math.max(0, Math.min(config.journeySteps.length - 1, Math.floor(elapsed / STEP_INTERVAL_MS)));
     if (targetStep !== currentStepIdx) {
       currentStepIdx = targetStep;
-      performSnapshotTransition(config.journeySteps[currentStepIdx], elapsed);
+      if (config.journeySteps[currentStepIdx]) {
+        performSnapshotTransition(config.journeySteps[currentStepIdx], elapsed);
+      }
     }
   } else {
     // Final Milestone Stage (Frozen Screenshot with celebration)

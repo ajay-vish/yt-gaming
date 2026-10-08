@@ -1,0 +1,111 @@
+/* =========================================
+   BASE STYLES & iOS STATUS BAR
+   ========================================= */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  width: 1080px;
+  height: 1920px;
+  background-color: #f7f7f8;
+  color: #0f0f0f;
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* iOS Status Bar */
+.status-bar {
+  height: 75px;
+  padding: 16px 44px 0 44px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 34px;
+  font-weight: 700;
+  color: #0f0f0f;
+  z-index: 20;
+  position: relative;
+  background-color: #f7f7f8;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.status-time {
+  width: 120px;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.5px;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: flex-end;
+}
+
+.signal-bars, .wifi-icon {
+  fill: #0f0f0f;
+  color: #0f0f0f;
+}
+
+/* iOS Battery Capsule */
+.battery-capsule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 29px;
+  border: 2.5px solid #0f0f0f;
+  border-radius: 8px;
+  position: relative;
+  font-size: 19px;
+  font-weight: 700;
+  padding-bottom: 1px;
+}
+
+.battery-capsule::after {
+  content: "";
+  position: absolute;
+  right: -5px;
+  top: 7px;
+  width: 3.5px;
+  height: 11px;
+  background: #0f0f0f;
+  border-radius: 0 3px 3px 0;
+}
+
+/* --- Dark Theme Overrides for Base & Status Bar --- */
+body.dark-theme {
+  background-color: #0f0f0f;
+  color: #f1f1f1;
+}
+
+body.dark-theme .status-bar {
+  background-color: #0f0f0f;
+  color: #ffffff;
+}
+
+body.dark-theme .signal-bars,
+body.dark-theme .wifi-icon {
+  fill: #ffffff;
+  color: #ffffff;
+}
+
+body.dark-theme .battery-capsule {
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+body.dark-theme .battery-capsule::after {
+  background: #ffffff;
+}

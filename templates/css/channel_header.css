@@ -1,0 +1,74 @@
+/* =========================================
+   CHANNEL HEADER & SUBSCRIBER COUNTER
+   ========================================= */
+
+.channel-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 12px;
+  margin-bottom: 18px;
+}
+
+.channel-avatar-main {
+  width: 145px;
+  height: 145px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
+}
+
+.channel-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.channel-name {
+  font-size: 35px;
+  font-weight: 700;
+  color: #0f0f0f;
+  line-height: 1.2;
+}
+
+.counter-value {
+  font-size: 52px;
+  font-weight: 700;
+  color: #0f0f0f;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s ease, transform 0.12s ease;
+}
+
+.counter-value.ticking {
+  transform: scale(1.025);
+  color: #0f9d58;
+}
+
+.counter-value.milestone {
+  color: #0f9d58;
+  text-shadow: 0 0 25px rgba(15, 157, 88, 0.4);
+}
+
+.subscribers-label {
+  font-size: 25px;
+  color: #606060;
+  font-weight: 400;
+}
+
+/* --- Dark Theme Overrides for Channel Header --- */
+body.dark-theme .channel-name {
+  color: #ffffff;
+}
+
+body.dark-theme .counter-value {
+  color: #ffffff;
+}
+
+body.dark-theme .subscribers-label {
+  color: #aaaaaa;
+}

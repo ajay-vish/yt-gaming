@@ -170,6 +170,8 @@ def generate_journey_steps(start_count: int, avatar_uri: str, num_steps: int = 6
     return steps
 
 CLICKBAIT_PHRASES = [
+    "USE THIS SOUND!",
+    "🤑\nUSE THIS SOUND!",
     "Use this audio to gain 1M views",
     "Use this audio to gain 100K Subs",
     "Use this audio to get 1M views in 24 hours 📈",
@@ -196,6 +198,11 @@ def render_counter_video(
     clickbait_text: str = None,
     mode: str = "journey",
     theme: str = "auto",
+    show_poll: bool = True,
+    poll_question: str = "Will you subscribe?",
+    poll_opt1: str = "Yes",
+    poll_opt2: str = "No but I'll like",
+    poll_votes: str = "0 votes",
     base_views: float = None,
     base_watch_time: float = None,
     base_subs_gain: int = None,
@@ -331,6 +338,11 @@ def render_counter_video(
         "startTimeMinute": live_minute,
         "batteryPercent": live_battery,
         "milestoneMessage": milestone_message,
+        "showPoll": show_poll,
+        "pollQuestion": poll_question,
+        "pollOption1": poll_opt1,
+        "pollOption2": poll_opt2,
+        "pollVotes": poll_votes,
         "journeySteps": journey_steps
     }
 
@@ -487,8 +499,22 @@ def render_counter_video(
 
     subprocess.run(cmd, check=True)
 
-    # Clean up temp recordings
-    shutil.rmtree(temp_record_dir, ignore_errors=True)
+    # Save matching metadata JSON alongside the video
+    try:
+        from metadata_generator import generate_video_metadata
+        bgm_name = bgm_sound.stem if 'bgm_sound' in locals() and bgm_sound else "viral_sound"
+        meta = generate_video_metadata(
+            channel_name=channel_name,
+            channel_handle=channel_handle,
+            target_subs=end_count,
+            song_name=bgm_name
+        )
+        meta_path = output_path.with_suffix(".json")
+        with open(meta_path, "w", encoding="utf-8") as f:
+            json.dump(meta, f, indent=2, ensure_ascii=False)
+        print(f"📝 Upload metadata saved to: {meta_path}")
+    except Exception as e:
+        print(f"Warning: Could not save metadata: {e}")
 
     print(f"✨ Successfully rendered subscriber counter video: {output_path} ({output_path.stat().st_size / 1024 / 1024:.2f} MB)")
     return output_path

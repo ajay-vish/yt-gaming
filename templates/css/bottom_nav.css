@@ -1,0 +1,77 @@
+/* =========================================
+   BOTTOM NAVIGATION TAB BAR & iOS INDICATOR
+   ========================================= */
+
+.bottom-bar {
+  height: 145px;
+  background: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 10px 26px 10px;
+  z-index: 20;
+  position: relative;
+  transition: background-color 0.2s ease, border-top-color 0.2s ease;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: #282828;
+  font-size: 21px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.tab-item svg {
+  color: #282828;
+}
+
+.tab-item.active {
+  font-weight: 700;
+  color: #000000;
+}
+
+/* iOS Home Indicator Pill */
+.home-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 340px;
+  height: 8px;
+  background: #000000;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+/* --- Dark Theme Overrides for Bottom Navigation --- */
+body.dark-theme .bottom-bar {
+  background: #0f0f0f;
+  border-top-color: #282828;
+}
+
+body.dark-theme .tab-item {
+  color: #aaaaaa;
+}
+
+body.dark-theme .tab-item svg {
+  color: #aaaaaa;
+}
+
+body.dark-theme .tab-item.active {
+  color: #ffffff;
+}
+
+body.dark-theme .tab-item.active svg {
+  color: #ffffff;
+  fill: #ffffff;
+}
+
+body.dark-theme .home-indicator {
+  background: #ffffff;
+}
