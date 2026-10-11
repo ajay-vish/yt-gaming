@@ -1,11 +1,11 @@
 {
   "channel_name": "ASK Gaming",
   "channel_handle": "@askgaming",
-  "current_subscribers": 1014,
-  "last_increment": 491,
-  "video_index": 4,
+  "current_subscribers": 1965,
+  "last_increment": 951,
+  "video_index": 5,
   "scheduled_slots": [
-    "2026-10-10T12:00:00Z"
+    "2026-10-11T12:00:00Z"
   ],
   "uploaded_videos": [
     {
@@ -28,6 +28,13 @@
       "milestone": 1014,
       "publish_at": "2026-10-10T12:00:00Z",
       "uploaded_at": "2026-10-10T07:34:33.911146+00:00"
+    },
+    {
+      "video_id": "oPWrFAa_uYM",
+      "title": "From 1,014 to 1,965 Live! THANK YOU SO MUCH! 🥹🎉 #Shorts #YouTubeStudio",
+      "milestone": 1965,
+      "publish_at": "2026-10-11T12:00:00Z",
+      "uploaded_at": "2026-10-11T07:39:40.252567+00:00"
     }
   ],
   "pending_comments": {
@@ -42,6 +49,10 @@
     "fSREZXTD2FI": {
       "target_count": 1014,
       "publish_at": "2026-10-10T12:00:00Z"
+    },
+    "oPWrFAa_uYM": {
+      "target_count": 1965,
+      "publish_at": "2026-10-11T12:00:00Z"
     }
   }
 }
