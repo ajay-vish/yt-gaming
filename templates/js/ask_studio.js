@@ -24,8 +24,12 @@ const config = Object.assign({
   holdStartSec: 1.5,
   holdEndSec: 2.5,
   clickbaitText: CLICKBAIT_POOL[Math.floor(Math.random() * CLICKBAIT_POOL.length)],
+  // Hook Headline & Ending CTA
+  hookHeadline: null,
+  ctaText: null,
+  nextMilestone: null,
   // YouTube Poll Sticker
-  showPoll: true,
+  showPoll: true, // Display interactive Shorts poll sticker
   pollQuestion: "Will you subscribe?",
   pollOption1: "Yes",
   pollOption2: "No but I'll like",
@@ -139,22 +143,47 @@ const quickLikesEl = document.getElementById("quick-likes");
 const quickCommentsEl = document.getElementById("quick-comments");
 const flashEl = document.getElementById("flash-overlay");
 
-// Populate Initial Static UI
-const clickbaitEl = document.getElementById("clickbait-text");
-if (clickbaitEl && config.clickbaitText) {
-  clickbaitEl.innerHTML = formatClickbait(config.clickbaitText);
+// Retention Hook & CTA Elements
+const hookHeadlineEl = document.getElementById("hook-headline");
+const hookHeadlineTextEl = document.getElementById("hook-headline-text");
+const loopCtaPromptEl = document.getElementById("loop-cta-prompt");
+const ctaTextEl = document.getElementById("cta-text");
+const viewportEl = document.querySelector(".content-viewport");
+
+// 1. Single Bold Hero Headline at [00:00 - 00:02]
+const subsGain = config.endCount - config.startCount;
+const defaultHeadline = subsGain > 0
+  ? `+${subsGain.toLocaleString()} SUBS ➔ REACHED ${Number(config.endCount).toLocaleString()}!`
+  : `REACHED ${Number(config.endCount).toLocaleString()} SUBSCRIBERS!`;
+const computedHeadline = config.hookHeadline || defaultHeadline;
+if (hookHeadlineTextEl) hookHeadlineTextEl.textContent = computedHeadline;
+safeText("hook-sub-tag", "NEARING THE GOAL 🎯");
+
+// 2. Ending Call-to-Action for [00:03 - 00:05]
+const targetNext = config.nextMilestone || (config.endCount < 1000 ? Math.ceil(config.endCount / 100) * 100 + 100 : Math.ceil(config.endCount / 500) * 500);
+const computedCta = config.ctaText || `Next stop: ${Number(targetNext).toLocaleString()}! Drop a comment if you were here early! 👇`;
+if (ctaTextEl) ctaTextEl.textContent = computedCta;
+
+// 3. Floating Clickbait Banner Overlay ("Use this audio to gain 1M views")
+const clickbaitEl = document.getElementById("clickbait-overlay");
+const clickbaitTextEl = document.getElementById("clickbait-text");
+if (clickbaitEl && clickbaitTextEl) {
+  clickbaitEl.style.display = "block";
+  clickbaitTextEl.innerHTML = formatClickbait(config.clickbaitText || CLICKBAIT_POOL[0]);
 }
 
-// YouTube Poll Sticker
+// 4. Interactive Poll Popup Sticker ("Will you subscribe?")
 const pollEl = document.getElementById("poll-popup-sticker");
-if (config.showPoll === false) {
-  if (pollEl) pollEl.style.display = "none";
-} else {
-  if (pollEl) pollEl.style.display = "block";
-  safeText("poll-title", config.pollQuestion || "Will you subscribe?");
-  safeText("poll-option-1", config.pollOption1 || "Yes");
-  safeText("poll-option-2", config.pollOption2 || "No but I'll like");
-  safeText("poll-footer", config.pollVotes || "0 votes");
+if (pollEl) {
+  if (config.showPoll !== false) {
+    pollEl.style.display = "block";
+    safeText("poll-title", config.pollQuestion || "Will you subscribe?");
+    safeText("poll-option-1", config.pollOption1 || "Yes");
+    safeText("poll-option-2", config.pollOption2 || "No but I'll like");
+    safeText("poll-footer", config.pollVotes || "0 votes");
+  } else {
+    pollEl.style.display = "none";
+  }
 }
 safeText("channel-name", config.channelName);
 safeSrc("channel-avatar", config.avatarUrl);
@@ -352,39 +381,18 @@ const journeyDurationMs = isJourney ? (config.journeySteps.length * STEP_INTERVA
 let currentStepIdx = -1;
 let milestoneStageInitialized = !isJourney;
 
-// Initial setup
+// Initial setup for first frame (Step 0)
 if (isJourney) {
-  const firstStep = config.journeySteps[0];
-  if (firstStep.theme === "dark") document.body.classList.add("dark-theme");
-  const minStr = firstStep.timeMin.toString().padStart(2, '0');
-  safeText("status-time", `${firstStep.timeHour}:${minStr}`);
-  safeText("battery-percent", firstStep.battery);
-  safeText("counter-val", Number(firstStep.subs).toLocaleString());
-  safeText("metric-views", firstStep.views);
-  safeText("metric-watch", firstStep.watch);
-  safeText("metric-subs", firstStep.subsGain);
-  if (firstStep.cards && Array.isArray(firstStep.cards)) {
-    firstStep.cards.forEach((c, idx) => applyCard(idx + 1, c));
-  } else {
-    applyCard(1, {
-      title: firstStep.title,
-      time: firstStep.videoTime,
-      thumbUrl: firstStep.thumbUrl,
-      views: firstStep.vViews,
-      likes: firstStep.vLikes,
-      comments: firstStep.vComments
-    });
-  }
   currentStepIdx = 0;
+  performSnapshotTransition(config.journeySteps[0], 0);
 } else {
-  setupFinalMilestoneStage(0);
+  safeText("counter-val", Number(config.startCount).toLocaleString());
 }
 
 function updateTimeline(nowTimestamp) {
   const elapsed = Math.max(0, nowTimestamp - startTime);
 
   if (isJourney && elapsed < journeyDurationMs) {
-    // Multi-Screenshot Journey Stage: step changes exactly every 0.5 seconds (500ms)
     const targetStep = Math.max(0, Math.min(config.journeySteps.length - 1, Math.floor(elapsed / STEP_INTERVAL_MS)));
     if (targetStep !== currentStepIdx) {
       currentStepIdx = targetStep;
@@ -393,10 +401,21 @@ function updateTimeline(nowTimestamp) {
       }
     }
   } else {
-    // Final Milestone Stage (Frozen Screenshot with celebration)
     if (!milestoneStageInitialized) {
       milestoneStageInitialized = true;
-      setupFinalMilestoneStage(elapsed);
+      setupFinalMilestoneStage(isJourney ? journeyDurationMs : 0);
+    }
+  }
+
+  // Hook headline visible at start [00:00 - 00:01.8], hides cleanly as milestone hits
+  if (elapsed >= 1800 && hookHeadlineEl && !hookHeadlineEl.classList.contains("fade-out")) {
+    hookHeadlineEl.classList.add("fade-out");
+  }
+
+  // Clear Call-to-Action prompt in lower third towards the ending loop
+  if (elapsed >= Math.max(2500, journeyDurationMs - 400)) {
+    if (loopCtaPromptEl && !loopCtaPromptEl.classList.contains("visible")) {
+      loopCtaPromptEl.classList.add("visible");
     }
   }
 

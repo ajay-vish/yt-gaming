@@ -10,7 +10,6 @@
   align-items: center;
   z-index: 15;
   background-color: #f7f7f8;
-  transition: background-color 0.2s ease;
 }
 
 .studio-brand {

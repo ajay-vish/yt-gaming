@@ -8,6 +8,7 @@
   padding: 0;
   user-select: none;
   -webkit-font-smoothing: antialiased;
+  transition: none !important;
 }
 
 body {
@@ -20,7 +21,6 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
-  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* iOS Status Bar */
@@ -36,7 +36,6 @@ body {
   z-index: 20;
   position: relative;
   background-color: #f7f7f8;
-  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .status-time {

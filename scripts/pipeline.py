@@ -44,11 +44,12 @@ try:
 except Exception:
     IST = timezone(timedelta(hours=5, minutes=30))
 
-# Random Daily Slots: Morning 8:00 AM, Evening 5:30 PM, Evening 8:30 PM IST
-DAILY_SLOTS_IST = [
-    (8, 0),    # Morning 8:00 AM IST
-    (17, 30),  # Evening 5:30 PM IST
-    (20, 30),  # Evening 8:30 PM IST
+# Peak YouTube Shorts Slots for US & UK Target Audience (UTC)
+# Slot 1: 18:30 UTC -> 6:30 PM UK (GMT/BST) / 1:30 PM US (EST) / 10:30 AM US (PST) (UK Evening + US Lunch Peak)
+# Slot 2: 23:30 UTC -> 11:30 PM UK / 6:30 PM US (EST) / 3:30 PM US (PST) (US Prime Evening Peak)
+PEAK_SLOTS_UTC = [
+    (18, 30),  # Slot 1: UK Prime Evening & US Lunch
+    (23, 30),  # Slot 2: US Prime Evening
 ]
 
 DEFAULT_CHANNEL_NAME = "ASK Gaming"
@@ -124,10 +125,12 @@ def compute_next_milestone(current_subs: int, last_increment: int = 0) -> tuple[
     return start_count, target_count
 
 
-def get_random_daily_slot(state: dict) -> str:
+def get_next_available_slot(state: dict) -> str:
     """
-    Selects 1 random slot from Morning 8:00 AM, Evening 5:30 PM, or Evening 8:30 PM IST.
-    Guarantees exactly 1 upload per day without colliding with already scheduled slots.
+    Schedules 2 YouTube Shorts daily targeting peak viewing hours in the US and UK:
+      - Slot 1: 18:30 UTC (6:30 PM UK / 1:30 PM US EST) -> UK Evening + US Lunch Peak
+      - Slot 2: 23:30 UTC (11:30 PM UK / 6:30 PM US EST) -> US Prime Evening Peak
+    Allows exactly 2 videos to be scheduled per calendar day without slot collision.
     """
     now_utc = datetime.now(timezone.utc)
     state["scheduled_slots"] = [
@@ -136,30 +139,16 @@ def get_random_daily_slot(state: dict) -> str:
     ]
     taken = set(state["scheduled_slots"])
 
-    now_ist = datetime.now(IST)
-    today_ist = now_ist.date()
+    today_utc = now_utc.date()
 
     for day_offset in range(14):
-        target_day = today_ist + timedelta(days=day_offset)
-        
-        day_already_scheduled = False
-        for s in taken:
-            s_dt = datetime.fromisoformat(s.replace("Z", "+00:00")).astimezone(IST)
-            if s_dt.date() == target_day:
-                day_already_scheduled = True
-                break
-        if day_already_scheduled:
-            continue
+        target_day = today_utc + timedelta(days=day_offset)
 
-        candidate_slots = list(DAILY_SLOTS_IST)
-        random.shuffle(candidate_slots)
-
-        for hour, minute in candidate_slots:
-            slot_ist = datetime(
+        for hour, minute in PEAK_SLOTS_UTC:
+            slot_utc = datetime(
                 target_day.year, target_day.month, target_day.day,
-                hour, minute, tzinfo=IST
+                hour, minute, tzinfo=timezone.utc
             )
-            slot_utc = slot_ist.astimezone(timezone.utc)
 
             # Ensure slot is at least 30 minutes in the future
             if slot_utc <= now_utc + timedelta(minutes=30):
@@ -168,10 +157,15 @@ def get_random_daily_slot(state: dict) -> str:
             iso_utc = slot_utc.isoformat().replace("+00:00", "Z")
             if iso_utc not in taken:
                 state["scheduled_slots"].append(iso_utc)
-                print(f"[Slot Scheduler] Reserved 1 daily slot: {slot_ist.strftime('%Y-%m-%d %I:%M %p')} IST ({iso_utc})")
+                uk_time = slot_utc.strftime("%I:%M %p")
+                us_est_time = (slot_utc - timedelta(hours=5)).strftime("%I:%M %p")
+                print(f"[US/UK Peak Scheduler] Reserved slot: {slot_utc.strftime('%Y-%m-%d')} at {uk_time} UK / {us_est_time} US EST ({iso_utc})")
                 return iso_utc
 
-    raise RuntimeError("No available slot found in the next 14 days.")
+    raise RuntimeError("No available US/UK peak slot found in the next 14 days.")
+
+# Backward compatibility alias
+get_random_daily_slot = get_next_available_slot
 
 
 def get_youtube_client():
@@ -344,6 +338,10 @@ def run_pipeline(force_counts: tuple[int, int] = None) -> int:
     from render_video import render_counter_video
     video_out = WORK_DIR / f"counter_{target_count}_{int(datetime.now().timestamp())}.mp4"
     
+    next_target = target_count + 500 if target_count >= 1000 else target_count + 100
+    headline_text = f"{start_count:,} ➔ {target_count:,} SUBSCRIBERS!"
+    cta_prompt = f"Next stop: {next_target:,}! Drop a comment if you were here early! 👇"
+
     render_counter_video(
         template_name="ask_studio",
         channel_name=channel_name,
@@ -351,8 +349,11 @@ def run_pipeline(force_counts: tuple[int, int] = None) -> int:
         start_count=start_count,
         end_count=target_count,
         duration_sec=clip_duration,
+        hook_headline=headline_text,
+        cta_text=cta_prompt,
         mode="journey",
         theme="auto",
+        show_poll=True,
         milestone_message=f"{target_count:,} SUBSCRIBERS UNLOCKED!",
         output_path=video_out,
         include_sound=True,

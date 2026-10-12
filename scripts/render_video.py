@@ -173,6 +173,7 @@ CLICKBAIT_PHRASES = [
     "USE THIS SOUND!",
     "🤑\nUSE THIS SOUND!",
     "Use this audio to gain 1M views",
+    "Use this sound to gain 1M subs 📈",
     "Use this audio to gain 100K Subs",
     "Use this audio to get 1M views in 24 hours 📈",
     "Use this audio to blow up your channel 🚀",
@@ -198,6 +199,8 @@ def render_counter_video(
     clickbait_text: str = None,
     mode: str = "journey",
     theme: str = "auto",
+    hook_headline: str = None,
+    cta_text: str = None,
     show_poll: bool = True,
     poll_question: str = "Will you subscribe?",
     poll_opt1: str = "Yes",
@@ -338,6 +341,8 @@ def render_counter_video(
         "startTimeMinute": live_minute,
         "batteryPercent": live_battery,
         "milestoneMessage": milestone_message,
+        "hookHeadline": hook_headline,
+        "ctaText": cta_text,
         "showPoll": show_poll,
         "pollQuestion": poll_question,
         "pollOption1": poll_opt1,
@@ -471,7 +476,7 @@ def render_counter_video(
         if bgm_input_idx is not None:
             fade_duration = min(0.8, round(duration_sec * 0.1, 2))
             fade_start = max(0.5, duration_sec - fade_duration)
-            filter_parts.append(f"[{bgm_input_idx}:a]atrim=0:{duration_sec},volume=0.42,afade=t=out:st={fade_start:.2f}:d={fade_duration:.2f}[bgm_out]")
+            filter_parts.append(f"[{bgm_input_idx}:a]atrim=0:{duration_sec},volume=0.68,afade=t=out:st={fade_start:.2f}:d={fade_duration:.2f}[bgm_out]")
             mix_inputs.append("[bgm_out]")
 
         filter_parts.append(f"{''.join(mix_inputs)}amix=inputs={len(mix_inputs)}:normalize=0:duration=longest[aout]")

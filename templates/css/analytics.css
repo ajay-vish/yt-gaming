@@ -45,7 +45,6 @@
   flex-direction: column;
   gap: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.02);
-  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .metric-label {
@@ -66,7 +65,6 @@
   color: #0f0f0f;
   font-feature-settings: "tnum";
   font-variant-numeric: tabular-nums;
-  transition: transform 0.12s ease;
 }
 
 .metric-num.ticking {

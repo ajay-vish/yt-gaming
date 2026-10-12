@@ -104,6 +104,16 @@ def main():
         help="Option 2 text."
     )
     parser.add_argument(
+        "--headline",
+        default=None,
+        help="Hero headline shown at 00:00 - 00:02 (e.g. '1,014 ➔ 1,965 SUBSCRIBERS!')."
+    )
+    parser.add_argument(
+        "--cta-text",
+        default=None,
+        help="Ending loop call-to-action text in lower-third."
+    )
+    parser.add_argument(
         "--no-sound",
         action="store_true",
         help="Disable tick, shutter, and milestone chime audio effects."
@@ -129,7 +139,7 @@ def main():
     print(f"Counter: {args.start:,} -> {args.end:,}")
     print(f"Mode: {args.mode}")
     print(f"Theme: {args.theme}")
-    print(f"Poll Sticker: {'Disabled' if args.no_poll else f'{args.poll_question} ({args.poll_opt1} / {args.poll_opt2})'}")
+    print(f"Headline: {args.headline or f'{args.start:,} ➔ {args.end:,} SUBSCRIBERS!'}")
     print(f"Duration: {duration_sec}s (randomized between 5 to 10 sec)" if args.duration is None else f"Duration: {duration_sec}s")
     if args.clickbait_text:
         print(f"Banner: {args.clickbait_text}")
@@ -143,6 +153,8 @@ def main():
         start_count=args.start,
         end_count=args.end,
         duration_sec=duration_sec,
+        hook_headline=args.headline,
+        cta_text=args.cta_text,
         clickbait_text=args.clickbait_text,
         mode=args.mode,
         theme=args.theme,

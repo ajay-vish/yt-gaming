@@ -11,7 +11,99 @@
   gap: 20px;
   overflow: hidden;
   background-color: #f7f7f8;
-  transition: background-color 0.2s ease;
+}
+
+/* Single Bold Hero Headline at [00:00 - 00:02] */
+.hook-headline-banner {
+  position: absolute;
+  top: 145px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  max-width: 980px;
+  background: rgba(0, 0, 0, 0.94);
+  border: 3.5px solid #ff0000;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 28px rgba(255, 0, 0, 0.35);
+  border-radius: 28px;
+  padding: 16px 40px;
+  text-align: center;
+  z-index: 120;
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.hook-headline-banner.fade-out {
+  display: none !important;
+}
+
+.hook-sub-tag {
+  font-family: "Roboto", sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #ff3b30;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.hook-headline-text {
+  font-family: "Roboto", sans-serif;
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
+  white-space: nowrap;
+}
+
+/* Clear Call-to-Action for Ending Loop [00:03 - 00:05] */
+.loop-cta-prompt {
+  position: absolute;
+  bottom: 230px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  max-width: 980px;
+  background: rgba(12, 12, 12, 0.94);
+  border: 2.5px solid rgba(255, 255, 255, 0.45);
+  border-radius: 28px;
+  padding: 18px 42px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.55), 0 4px 16px rgba(0, 0, 0, 0.25);
+  z-index: 115;
+  pointer-events: none;
+  backdrop-filter: blur(14px);
+  display: none;
+}
+
+.loop-cta-prompt.visible {
+  display: block;
+}
+
+.cta-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: "Roboto", sans-serif;
+  font-size: 33px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+}
+
+.cta-pulse-dot {
+  width: 16px;
+  height: 16px;
+  background-color: #ff0000;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #ff0000;
+  animation: pulseDot 1s infinite alternate;
+}
+
+@keyframes pulseDot {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  100% { transform: scale(1.3); opacity: 1; }
 }
 
 /* iOS Scrollbar Track */
@@ -62,7 +154,7 @@
 /* YouTube Shorts Poll Popup Sticker (Interactive Poll Card) */
 .poll-popup-sticker {
   position: absolute;
-  top: 1010px;
+  top: 960px;
   right: 36px;
   width: 580px;
   background: #edf4fe;

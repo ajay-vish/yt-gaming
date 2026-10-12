@@ -41,7 +41,6 @@
   letter-spacing: -0.5px;
   font-feature-settings: "tnum";
   font-variant-numeric: tabular-nums;
-  transition: color 0.2s ease, transform 0.12s ease;
 }
 
 .counter-value.ticking {
