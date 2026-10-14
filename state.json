@@ -1,11 +1,11 @@
 {
   "channel_name": "ASK Gaming",
   "channel_handle": "@askgaming",
-  "current_subscribers": 5160,
-  "last_increment": 1789,
-  "video_index": 7,
+  "current_subscribers": 7539,
+  "last_increment": 2379,
+  "video_index": 8,
   "scheduled_slots": [
-    "2026-10-13T18:30:00Z"
+    "2026-10-14T18:30:00Z"
   ],
   "uploaded_videos": [
     {
@@ -49,6 +49,13 @@
       "milestone": 5160,
       "publish_at": "2026-10-13T18:30:00Z",
       "uploaded_at": "2026-10-13T08:13:44.661238+00:00"
+    },
+    {
+      "video_id": "GGylaLSVD4Q",
+      "title": "7,539 Subscribers! We Did It! 🥹🎉 Road to 10k Starts Now! #Shorts #ASKGaming",
+      "milestone": 7539,
+      "publish_at": "2026-10-14T18:30:00Z",
+      "uploaded_at": "2026-10-14T06:31:20.043402+00:00"
     }
   ],
   "pending_comments": {
@@ -75,6 +82,10 @@
     "OlYZbkKQGPY": {
       "target_count": 5160,
       "publish_at": "2026-10-13T18:30:00Z"
+    },
+    "GGylaLSVD4Q": {
+      "target_count": 7539,
+      "publish_at": "2026-10-14T18:30:00Z"
     }
   }
 }
