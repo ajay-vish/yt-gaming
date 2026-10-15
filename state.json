@@ -1,11 +1,11 @@
 {
   "channel_name": "ASK Gaming",
   "channel_handle": "@askgaming",
-  "current_subscribers": 7539,
-  "last_increment": 2379,
-  "video_index": 8,
+  "current_subscribers": 10973,
+  "last_increment": 3434,
+  "video_index": 9,
   "scheduled_slots": [
-    "2026-10-14T18:30:00Z"
+    "2026-10-15T18:30:00Z"
   ],
   "uploaded_videos": [
     {
@@ -56,6 +56,13 @@
       "milestone": 7539,
       "publish_at": "2026-10-14T18:30:00Z",
       "uploaded_at": "2026-10-14T06:31:20.043402+00:00"
+    },
+    {
+      "video_id": "wuKZWFxkSmE",
+      "title": "10,973 SUBSCRIBERS LIVE! 🥹🎉 THANK YOU SO MUCH! #Shorts #YouTubeStudio",
+      "milestone": 10973,
+      "publish_at": "2026-10-15T18:30:00Z",
+      "uploaded_at": "2026-10-15T06:14:50.258255+00:00"
     }
   ],
   "pending_comments": {
@@ -86,6 +93,10 @@
     "GGylaLSVD4Q": {
       "target_count": 7539,
       "publish_at": "2026-10-14T18:30:00Z"
+    },
+    "wuKZWFxkSmE": {
+      "target_count": 10973,
+      "publish_at": "2026-10-15T18:30:00Z"
     }
   }
 }
