@@ -304,10 +304,16 @@ def run_pipeline(force_counts: tuple[int, int] = None) -> int:
     channel_name = DEFAULT_CHANNEL_NAME
     channel_handle = DEFAULT_CHANNEL_HANDLE
 
+    has_creds = bool(os.environ.get("YT_REFRESH_TOKEN") and os.environ.get("YT_CLIENT_ID"))
     if live_stats:
         print(f"[YouTube Auth] Connected to channel: {live_stats['title']} (ID: {live_stats['id']})")
+    elif has_creds and youtube:
+        msg = "[YouTube Auth Error] YouTube credentials are set, but API authentication failed (token expired or revoked). Please refresh YT_REFRESH_TOKEN."
+        print(msg, file=sys.stderr)
+        if os.environ.get("CI") or os.environ.get("GITHUB_ACTIONS"):
+            raise RuntimeError(msg)
     else:
-        print(f"[YouTube Auth] Running in local preview mode (no YouTube client).")
+        print(f"[YouTube Auth] Running in local preview mode (no YouTube credentials configured).")
 
     # 2. Reserve 1 random daily slot
     try:
@@ -385,12 +391,14 @@ def run_pipeline(force_counts: tuple[int, int] = None) -> int:
                 "publish_at": publish_at
             }
         except Exception as e:
-            print(f"[Upload Error] Could not upload to YouTube: {e}")
+            print(f"[Upload Error] Could not upload to YouTube: {e}", file=sys.stderr)
+            raise e
     else:
-        print("\n[Notice] Video rendered locally without upload.")
+        print("\n[Notice] Video rendered locally without upload (no YouTube client).")
         print(f"Rendered video available at: {video_out}")
+        return 0
 
-    # 7. Update state for progressive growth
+    # 7. Update state for progressive growth (only reached on successful upload)
     state["current_subscribers"] = target_count
     state["last_increment"] = increment
     state["video_index"] = state.get("video_index", 0) + 1

@@ -42,7 +42,7 @@ def main():
         print("1. Go to https://console.cloud.google.com")
         print("2. Create or select a project.")
         print("3. Enable 'YouTube Data API v3' in APIs & Services -> Library.")
-        print("4. Configure OAuth Consent Screen (External, add your Google account as test user).")
+        print("4. Configure OAuth Consent Screen: User Type = External. IMPORTANT: Set Publishing status to 'In Production' (click 'Publish App') so refresh tokens do NOT expire after 7 days.")
         print("5. Go to Credentials -> Create Credentials -> OAuth client ID -> Desktop App.")
         print("6. Download JSON and save it as 'scripts/client_secret.json'.")
         print("=" * 70)

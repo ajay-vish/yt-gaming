@@ -1,12 +1,10 @@
 {
   "channel_name": "ASK Gaming",
   "channel_handle": "@askgaming",
-  "current_subscribers": 987638,
-  "last_increment": 306689,
-  "video_index": 21,
-  "scheduled_slots": [
-    "2026-10-26T18:30:00Z"
-  ],
+  "current_subscribers": 10973,
+  "last_increment": 3434,
+  "video_index": 9,
+  "scheduled_slots": [],
   "uploaded_videos": [
     {
       "video_id": "asgI6VTT5yM",
